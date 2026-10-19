@@ -104,6 +104,13 @@ body::before{content:"";position:fixed;inset:0;background:url("fundo.jpg") 52% c
   footer{margin-top:16px;flex-direction:column;gap:2px}
 }
 
+/* telas mais baixas: some a descrição (fica no tooltip) para caber todos os painéis sem rolar */
+@media (min-width:1000px) and (max-height:940px){
+  .card p{display:none}
+  .card > div:not(.top):not(.go){grid-row:1 / span 2}
+  .hero p:not(.kicker){display:none}
+}
+
 @media (max-width:600px){
   :root{--foto-op:.3}
   .wrap{padding-top:28px}
@@ -169,8 +176,15 @@ const PAINEIS = [
     icone: "grafico",
   },
   {
-    titulo: "Gestão de Litigation",
+    titulo: "Contencioso Tributário (Argos 👁️⚖️)",
     tag: "Contencioso",
+    descricao: "Prazos fatais e internos, quadro de demandas, carga de cada pessoa e métricas de gestão do time de contencioso.",
+    url: "/contencioso/",
+    icone: "calendario",
+  },
+  {
+    titulo: "Gestão de Litigation",
+    tag: "Gestão jurídica",
     descricao: "Operação, performance e gestão jurídica do escritório.",
     url: "https://gestao.veiga.law/board",
     icone: "balanca",
