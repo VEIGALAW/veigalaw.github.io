@@ -54,7 +54,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;an
 
 .hero{margin:64px 0 28px;animation:fadeUp .6s .08s var(--ease) both}
 .kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:0 0 10px}
-h1{font-size:clamp(28px,4.4vw,42px);line-height:1.1;letter-spacing:-.025em;color:var(--ink2);margin:0;font-weight:700}
+h1{text-wrap:balance;font-size:clamp(28px,4.4vw,42px);line-height:1.1;letter-spacing:-.025em;color:var(--ink2);margin:0;font-weight:700}
 .hero p{color:var(--muted);margin:12px 0 0;max-width:560px}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
@@ -86,22 +86,22 @@ body::before{content:"";position:fixed;inset:0;background:url("fundo.jpg") 52% c
 @media (min-width:1000px){
   :root{--cw:clamp(330px,21vw,410px)}
   header{position:fixed;top:28px;left:40px;right:40px;z-index:2}
-  .wrap{max-width:none;width:var(--cw);margin:0 0 0 calc(52.5vw - var(--cw) / 2);padding:120px 0 40px;min-height:100vh;display:flex;flex-direction:column;justify-content:center}
-  .hero{margin:0 0 22px}
-  h1{font-size:30px}
+  .wrap{max-width:none;width:var(--cw);margin:0 0 0 calc(52.5vw - var(--cw) / 2);padding:104px 0 28px;min-height:100vh;display:flex;flex-direction:column;justify-content:center}
+  .hero{margin:0 0 18px}
+  h1{font-size:27px}
   .hero p{font-size:14px}
-  .grid{grid-template-columns:1fr;gap:12px}
+  .grid{grid-template-columns:1fr;gap:10px}
   /* cards compactos em linha: ícone | título + descrição | seta, para caber vários painéis sem rolar */
-  .card{min-height:0;padding:14px 16px;display:grid;grid-template-columns:44px 1fr 18px;column-gap:14px;row-gap:2px;align-items:center}
+  .card{min-height:0;padding:12px 16px;display:grid;grid-template-columns:44px 1fr 18px;column-gap:14px;row-gap:2px;align-items:center}
   .card .top{display:contents}
   .card .ico{grid-column:1;grid-row:1 / span 2}
   .card .key{position:absolute;top:10px;right:12px}
   .card > div:not(.top):not(.go){grid-column:2;grid-row:1}
   .card h2{font-size:17px}
-  .card p{grid-column:2;grid-row:2;font-size:13px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .card p{grid-column:2;grid-row:2;font-size:13px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
   .card .go{grid-column:3;grid-row:1 / span 2;border:0;padding:0;align-self:center}
   .card .go b{display:none}
-  footer{margin-top:22px;flex-direction:column;gap:2px}
+  footer{margin-top:16px;flex-direction:column;gap:2px}
 }
 
 @media (max-width:600px){
@@ -175,6 +175,13 @@ const PAINEIS = [
     url: "https://gestao.veiga.law/board",
     icone: "balanca",
   },
+  {
+    titulo: "ÁGORA",
+    tag: "Gestão de RH",
+    descricao: "Formulários e submissões do time: onde as pessoas da Veiga levam seus pedidos e são ouvidas.",
+    url: "https://gestao.veiga.law/formulario-submissoes",
+    icone: "pessoas",
+  },
 ];
 
 const ICONES = {
@@ -182,6 +189,7 @@ const ICONES = {
   grafico: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
   pasta:   '<path d="M3 6a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
   balanca: '<path d="M12 3v18M5 21h14M6 7h12M6 7l-3 7a3 3 0 0 0 6 0zM18 7l-3 7a3 3 0 0 0 6 0z"/>',
+  pessoas: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20a6 6 0 0 1 12 0M16 4.5a3 3 0 0 1 0 6M18 20a6 6 0 0 0-3-5.2"/>',
   calendario: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/>',
 };
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -189,7 +197,7 @@ const LS = {get(k){try{return localStorage.getItem(k)}catch(e){return null}}, se
 const ultimo = LS.get("hub.ultimo");
 
 document.getElementById("grid").innerHTML = PAINEIS.map((p, i) => `
-  <a class="card${p.emBreve ? " soon" : ""}" href="${esc(p.url)}" data-url="${esc(p.url)}" style="animation-delay:${.14 + i * .07}s">
+  <a class="card${p.emBreve ? " soon" : ""}" href="${esc(p.url)}" title="${esc(p.descricao)}" data-url="${esc(p.url)}" style="animation-delay:${.14 + i * .07}s">
     ${ultimo === p.url ? '<span class="last">Último acessado</span>' : ""}
     <div class="top">
       <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONES[p.icone] || ICONES.pasta}</svg></div>
