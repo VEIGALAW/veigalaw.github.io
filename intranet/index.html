@@ -2,437 +2,424 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Intranet Veiga</title>
-<meta name="description" content="A intranet da Veiga: sistemas, indicadores do dia, agenda fiscal, prazos e unidades.">
-<script>document.documentElement.classList.add("js")</script>
+<meta name="description" content="A intranet da Veiga: sistemas, números do dia, agenda fiscal, prazos e unidades.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-<!-- hallmark: direção própria, tirada do modelo de apresentação da Veiga (Modelo PPT Minas):
-     fotos do escritório em tela cheia, capítulos numerados em Didone fina, lombada preta com o nome da seção,
-     etiqueta azul #227BA6, Lato Light no corpo, matriz com células verde/âmbar/vermelho. -->
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@200;300;400;600&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 <style>
-/* Hallmark · shape: app screen · genre: editorial · theme: brand · redesign: full
-   direção: o modelo de apresentação da Veiga (fotos do acervo em tela cheia, capítulos numerados em Didone, lombada preta, etiqueta azul, matriz colorida) */
-/* Hallmark · pre-emit critique: P4 H4 E4 S4 R4 V4 · weakest: E, a versão galeria era bonita e não servia para nada no dia; agora cada lâmina traz um número, um prazo ou um atalho */
+/* Hallmark · shape: app screen · genre: modern-minimal · theme: brand · redesign: full
+ * direção: a linguagem do modelo "Voile" (abertura noturna, Sora fina, pílulas, blocos arredondados, capítulos alternando papel, tinta e azul profundo)
+ * com as fotos do acervo do escritório no lugar dos gradientes chapados · paper: #FFFFFF · accent: #227BA6 · display: Sora · body: Instrument Sans · v1 */
+/* Hallmark · pre-emit critique: P4 H4 E4 S4 R4 V4 · weakest: V, o capítulo de abertura carrega seis fotos; cada uma vem comprimida e com lazy-load */
+/* Hallmark · nota: os olhos em JetBrains Mono, caixa alta e espaçados, o olho acima de cada título e os pontos medianos no verbete
+   são a assinatura do modelo Voile que o dono pediu para seguir; ficam de propósito, não por descuido */
 :root{
-  --ink:#0b0b0c; --paper:#fdfdfc; --on-dark:#f7f7f5; --on-dark-2:#d6d6d2; --head:#141414; --red:#b81414; --red-soft:#e05a5a; --graphite:#3a3a3a; --dim:#a9a9a6; --dim-2:#9a9a97; --dim-3:#8f8f8c; --rule-2:#ececea; --rule-dark:#262628; --field:#bdbdba; --deep:#0b2a3c;
-  --veil-0:rgba(10,10,12,.06); --veil-1:rgba(10,10,12,.62); --veil-2:rgba(10,10,12,.58); --veil-3:rgba(10,10,12,.7); --veil-n:rgba(10,10,12,0); --stone:#f5f4f0; --text:#262626; --mute:#5c5c5f; --rule:#d9d9d6;
-  --blue:#227ba6; --blue-d:#1f719a; --blue-soft:#e6f0f6;
-  --ok:#e2f0d9; --ok-t:#2f6b1f; --warn:#fff2cc; --warn-t:#7a5a00; --bad:#fbe0dc; --bad-t:#9a1c1c;
-  --serif:"Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
-  --sans:"Lato", "Segoe UI", system-ui, sans-serif;
-  --spine:44px;
+  --night:#0C0F14; --night-2:#161B23; --paper:#FFFFFF; --mist:#F4F4F4;
+  --ink:#1C2026; --ink-soft:#5A606A; --line:#E3E5E9;
+  --deep:#143A54; --acc:#227BA6; --acc-text:#1F719A; --tint:#EDF4F9; --hl:#7CC4E8;
+  --grad:linear-gradient(115deg,#143A54 0%,#1F719A 55%,#3DA5D8 100%);
+  --on-night:#E9ECF1; --night-soft:#A9B1BE; --night-mute:#7D8696; --night-line:#232A35;
+  --ok:#1F6B3F; --warn:#7A5300; --bad:#A32C1F; --ok-bg:#E4F4EA; --warn-bg:#FFF3D6; --bad-bg:#FBE3DF;
+  --wash-1:#E07A3F; --wash-2:#227BA6; --wash-3:#D98BA6; --wash-4:#44C682; --wash-5:#364C90; --wash-6:#7C5CBF;
+  --f-display:"Sora","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-body:"Instrument Sans","Helvetica Neue",Arial,system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --gutter:max(16px,env(safe-area-inset-left,0px));
+  color-scheme:light;
 }
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;overflow-x:clip}
-body{margin:0;overflow-x:clip;background:var(--paper);color:var(--text);font:300 16px/1.6 var(--sans);font-feature-settings:"lnum","tnum"}
-a{color:inherit}
+html{overflow-x:clip;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:clip}
+h1,h2,h3{font-family:var(--f-display);font-weight:300;letter-spacing:-.02em;line-height:1.05;margin:0;text-wrap:balance}
+p{margin:0}
 img{display:block;max-width:100%}
-button,input,select{font:inherit;color:inherit}
-:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+button{font:inherit;cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:4px}
+.wrap{padding-left:var(--gutter);padding-right:var(--gutter)}
+.inner{max-width:1240px;margin:0 auto}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+.chap-label{display:flex;gap:14px;align-items:center}
+.chap-label::before{content:"";width:28px;height:1px;background:currentColor;opacity:.5}
+svg{display:block;overflow:visible}
+.sk{display:inline-block;min-width:5ch;height:.85em;border-radius:4px;background:currentColor;opacity:.12;vertical-align:-.08em}
 
-/* hallmark-waive tracked-caps: a Didone espaçada em caixa alta é a marca dos títulos da Veiga no modelo oficial */
-.cap{font-family:var(--serif);font-weight:400;text-transform:uppercase;letter-spacing:.14em;line-height:1.15;text-wrap:balance}
-.sk{display:inline-block;width:6ch;height:.9em;background:var(--stone);vertical-align:-.1em}
+/* ---------- Abertura ---------- */
+#gate{background:var(--night);color:var(--on-night);min-height:min(100svh,920px);position:relative;overflow:hidden}
+#gate .inner{padding-block:clamp(48px,9vh,110px) 56px;display:grid;gap:clamp(36px,6vh,64px)}
+.gate-head{display:grid;gap:22px;max-width:860px}
+.gate-head .eyebrow{color:var(--night-mute)}
+.gate-head h1{font-size:clamp(40px,7vw,92px);color:#F4F6F9}
+.gate-head h1 em{font-style:normal;color:var(--hl)}
+.gate-head p{color:var(--night-soft);font-size:clamp(16px,1.6vw,19px);max-width:56ch}
+.dict{display:flex;flex-wrap:wrap;gap:8px 28px;font-family:var(--f-mono);font-size:13px;color:var(--night-mute);border-top:1px solid var(--night-line);padding-top:18px;max-width:860px}
+.dict b{color:#DDE3EC;font-weight:500}
+.choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,2vw,28px)}
+.choice{display:grid;gap:16px;color:var(--on-night);text-decoration:none;border-radius:14px}
+.choice:focus-visible{outline:2px solid var(--hl);outline-offset:6px}
+.choice-tile{aspect-ratio:4/5;border-radius:14px;position:relative;overflow:hidden;background:var(--night-2);transition:transform .6s cubic-bezier(.2,.7,.1,1)}
+.choice-tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.choice-tile .wash{position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,var(--night) 100%)}
+.choice-tile .wash::before{content:"";position:absolute;inset:0;background:var(--c);mix-blend-mode:color;opacity:.55}
+.choice-tile::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.choice-tile .no{position:absolute;left:18px;top:16px;font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;color:#DDE3EC;z-index:2}
+.choice-tile .area{position:absolute;left:18px;bottom:16px;right:18px;font-size:14px;color:var(--night-soft);z-index:2}
+.choice:hover .choice-tile,.choice:focus-visible .choice-tile{transform:translateY(-6px)}
+.choice:active .choice-tile{transform:translateY(-2px)}
+.choice-meta{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;gap:4px 12px;border-top:1px solid var(--night-line);padding-top:14px}
+.choice-meta h2{font-size:clamp(22px,2.4vw,30px);color:#F4F6F9}
+.choice-meta .go{font-family:var(--f-mono);font-size:12px;color:#C9D1DD;letter-spacing:.08em;white-space:nowrap}
+.choice-meta p{grid-column:1/-1;color:var(--night-soft);font-size:14.5px}
+.gate-foot{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between;color:var(--night-mute);font-size:14px}
+.ghost{background:none;border:1px solid #3A4352;color:var(--on-night);border-radius:999px;padding:12px 22px;min-height:44px;text-decoration:none;display:inline-flex;align-items:center}
+.ghost:hover{border-color:var(--hl)}
+.ghost:active{background:var(--night-2)}
 
-/* ——— capa ——— */
-.capa{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);background:var(--ink);color:var(--on-dark);min-height:620px}
-.capa .txt{display:flex;flex-direction:column;justify-content:space-between;padding:40px 48px 44px}
-.marca{display:flex;align-items:center;gap:16px;color:var(--on-dark);text-decoration:none}
-.marca svg{width:54px;height:54px}
-.marca span{font-family:var(--serif);font-size:2.1rem;letter-spacing:.2em;line-height:1}
-.capa h1{text-wrap:balance;margin:0 0 20px;font-size:clamp(1.9rem,3.2vw,2.9rem);max-width:12ch}
-.capa .when{margin:0;color:var(--on-dark-2);font-size:1.02rem}
-.capa .sub{margin:28px 0 0;color:var(--dim-2);font-size:.9rem;max-width:40ch}
-.capa figure{margin:0;position:relative;overflow:hidden}
-.capa figure img{width:100%;height:100%;object-fit:cover;object-position:58% 50%}
+/* ---------- Menu ---------- */
+#nav{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);z-index:50;background:rgba(255,255,255,.82);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border-bottom:1px solid rgba(0,0,0,.06);transform:translateY(-110%);transition:transform .5s cubic-bezier(.2,.7,.1,1)}
+#nav.on{transform:none}
+#nav .bar{display:flex;align-items:center;gap:12px;justify-content:space-between;height:60px;max-width:1240px;margin:0 auto}
+.home{font-family:var(--f-display);font-size:15px;display:flex;gap:10px;align-items:center;min-height:44px;text-decoration:none;color:var(--ink)}
+.home svg{width:22px;height:22px;color:var(--acc)}
+.home small{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;color:var(--ink-soft);text-transform:uppercase}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.tab{font-size:14px;padding:0 14px;min-height:40px;display:flex;align-items:center;gap:8px;border-radius:999px;color:var(--ink-soft);white-space:nowrap;text-decoration:none}
+.tab b{font-family:var(--f-mono);font-weight:500;font-size:11px}
+.tab:hover{color:var(--ink);background:var(--mist)}
+.tab:active{background:var(--line)}
+.tab[aria-current="true"]{background:var(--ink);color:var(--paper)}
+#progress{position:absolute;left:0;bottom:-1px;height:2px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--acc)}
 
-/* ——— programação (índice) ——— */
-.prog{position:relative;background:var(--ink) url(img/indice.jpg) 100% 50%/cover no-repeat;color:var(--on-dark);min-height:560px;padding:64px 56px}
-.prog h2{margin:0 0 40px;font-size:clamp(1.8rem,3vw,2.6rem);color:var(--on-dark)}
-.prog ol{list-style:none;margin:0;padding:0;display:grid;gap:4px;max-width:420px}
-.prog a{display:flex;gap:14px;align-items:baseline;padding:9px 0;text-decoration:none;color:var(--on-dark-2);font-variant:small-caps;font-size:1.06rem;letter-spacing:.03em;border-bottom:1px solid transparent;transition:color .2s,border-color .2s}
-.prog a b{font-weight:400;color:var(--dim-3);min-width:2.2ch}
-.prog a:hover{color:var(--on-dark);border-color:var(--graphite)}
+/* ---------- Capítulos ---------- */
+section{position:relative}
+.sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px 48px;align-items:end}
+.sec-head > div{display:grid;gap:16px}
+.sec-head h2{font-size:clamp(32px,4.6vw,64px)}
+.sec-head p{color:var(--ink-soft);max-width:46ch}
 
-/* ——— capítulo: foto, numeral, título ——— */
-.cap-div{position:relative;height:500px;overflow:hidden;background:var(--ink);color:var(--on-dark)}
-.cap-div img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.06);transition:transform 2.4s cubic-bezier(.2,.7,.2,1)}
-.cap-div.vista img{transform:scale(1)}
-.cap-div::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--veil-1),var(--veil-0) 60%)}
-.cap-div .ttl{position:absolute;z-index:1;left:56px;bottom:56px;display:flex;align-items:center;gap:28px}
-.cap-div .num{font-family:var(--serif);font-size:7.5rem;line-height:.8;font-weight:400}
-.cap-div h2{margin:0;font-size:clamp(1.4rem,2.4vw,2.1rem);max-width:14ch}
-.cap-div.dir .ttl{left:auto;right:64px}
-.cap-div.dir::after{background:linear-gradient(270deg,var(--veil-2),var(--veil-0) 60%)}
+/* hoje: verbete + texto que se revela */
+.hoje{background:var(--tint)}
+.hoje .inner{padding-block:clamp(90px,16vh,180px);display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr);gap:40px 64px;align-items:start}
+.entry{font-family:var(--f-mono);font-size:14px;color:var(--ink-soft);display:grid;gap:14px;border-top:1px solid rgba(0,0,0,.12);padding-top:18px}
+.entry .w{font-family:var(--f-display);font-size:clamp(48px,6vw,84px);font-weight:200;color:var(--ink);letter-spacing:-.03em;line-height:1}
+.entry .sense{display:flex;gap:10px;align-items:baseline}
+.entry .sense.hl{color:var(--ink)}
+.entry .sense.hl b{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.entry .sense b{font-weight:500;font-size:11px;border:1px solid currentColor;border-radius:4px;padding:1px 6px;white-space:nowrap}
+.reveal-text{font-family:var(--f-display);font-weight:300;font-size:clamp(26px,3.4vw,46px);line-height:1.18;letter-spacing:-.015em;text-wrap:pretty}
+.reveal-text .wd{display:inline}
+.reveal-text strong{font-weight:400;color:var(--acc-text)}
 
-/* ——— lâmina de conteúdo: lombada preta, etiqueta azul, burst no canto ——— */
-.lam{position:relative;display:grid;grid-template-columns:var(--spine) minmax(0,1fr);background:var(--paper)}
-.lam .lomb{background:var(--ink);color:var(--on-dark);display:flex;align-items:flex-end;justify-content:center;padding:36px 0}
-.lam .lomb span{writing-mode:vertical-rl;transform:rotate(180deg);font-family:var(--serif);font-size:1.05rem;letter-spacing:.04em;white-space:nowrap}
-.lam .corpo{padding:56px 64px 72px;position:relative}
-.lam .tag{position:absolute;top:0;right:0;background:var(--blue-d);color:var(--on-dark);font-family:var(--serif);font-size:.95rem;padding:12px 24px}
-.lam h3.cap{margin:0 0 6px;font-size:1.32rem;font-weight:500;color:var(--head)}
-.lam .lead{margin:0 0 36px;color:var(--blue-d);font-size:.95rem}
-.lam .burst{position:absolute;right:26px;bottom:22px;width:40px;height:40px;color:var(--graphite)}
-.u{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}
+/* indicadores: o capítulo profundo */
+.ind{background:var(--deep);color:var(--paper);overflow:hidden}
+.ind .inner{padding-block:clamp(100px,16vh,180px);display:grid;gap:clamp(40px,7vh,72px);position:relative;z-index:2}
+.ind .eyebrow{color:rgba(255,255,255,.65)}
+.mf-big{font-size:clamp(34px,5.6vw,80px);font-weight:200;max-width:18ch;letter-spacing:-.03em}
+.mf-points{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px 32px}
+.mf-pt{display:grid;gap:8px;border-top:1px solid rgba(255,255,255,.22);padding-top:18px;align-content:start}
+.mf-pt .ix{font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.65)}
+.mf-pt h3{font-size:clamp(30px,3vw,44px);font-weight:200;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.mf-pt .ref{color:rgba(255,255,255,.75);font-size:14px}
+.mf-pt .ref small{display:block;font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;opacity:.7;margin-top:2px}
+.mf-pt .pill{justify-self:start;font-size:12.5px;font-weight:500;border-radius:999px;padding:4px 10px;background:rgba(255,255,255,.12);color:var(--paper)}
+.mf-pt .pill.ok{background:var(--ok-bg);color:var(--ok)} .mf-pt .pill.warn{background:var(--warn-bg);color:var(--warn)} .mf-pt .pill.bad{background:var(--bad-bg);color:var(--bad)}
+.mf-pt .use{color:rgba(255,255,255,.6);font-size:13.5px;max-width:30ch}
+.ind .note{font-size:13px;color:rgba(255,255,255,.6);max-width:72ch;border-top:1px solid rgba(255,255,255,.14);padding-top:16px}
+.ghost-dots{position:absolute;right:-8vw;top:-6vh;width:min(60vw,760px);opacity:.08;z-index:1;pointer-events:none;color:var(--paper)}
 
-/* considerandos */
-.cons{margin:0;padding:0;list-style:none;max-width:980px}
-.cons li,.cons-fim{margin:0 0 20px;font-size:1.04rem;line-height:1.75;text-align:justify;hyphens:auto}
-.cons-fim{margin:0;max-width:980px}
-.cons li b{font-weight:400;text-transform:uppercase;color:var(--head);letter-spacing:.02em}
-.cons strong{font-weight:700;color:var(--head)}
+/* agenda */
+.agenda{background:var(--paper)}
+.agenda .inner{padding-block:clamp(90px,14vh,160px);display:grid;gap:48px}
+.ag-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:32px 72px;align-items:start}
+.pillars{list-style:none;margin:0;padding:0;display:grid;gap:26px}
+.pillar{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:4px 18px;align-items:start}
+.pillar .ic{grid-row:span 3;width:52px;height:52px;border-radius:12px;background:var(--mist);display:grid;place-items:center;color:var(--ink);font-family:var(--f-display);font-weight:300;font-size:20px}
+.pillar.next .ic{background:var(--grad);color:var(--paper)}
+.pillar .ix{font-family:var(--f-mono);font-size:12px;color:var(--ink-soft);letter-spacing:.1em;text-transform:uppercase;grid-column:2/4}
+.pillar.next .ix{color:var(--acc-text)}
+.pillar h3{font-size:clamp(20px,2vw,26px);font-weight:400}
+.pillar .d{font-family:var(--f-display);font-weight:200;font-size:clamp(24px,2.4vw,32px);letter-spacing:-.02em;text-align:right;line-height:1;align-self:center;font-variant-numeric:tabular-nums}
+.pillar p{color:var(--ink-soft);max-width:42ch;grid-column:2/4}
+.ref-card{border-radius:16px;background:var(--tint);padding:clamp(24px,3vw,40px);display:grid;gap:22px}
+.ref-card .big{font-family:var(--f-display);font-weight:200;font-size:clamp(64px,8vw,120px);letter-spacing:-.04em;line-height:.9;color:var(--ink)}
+.ref-card .big small{display:block;font-family:var(--f-body);font-weight:400;font-size:15px;letter-spacing:0;color:var(--ink-soft);margin-top:12px;max-width:34ch;line-height:1.5}
+.steps{display:grid;gap:10px}
+.steps .bar{display:flex;gap:6px}
+.steps .bar span{height:3px;flex:1;background:var(--line);border-radius:2px;overflow:hidden;position:relative}
+.steps .bar span i{position:absolute;inset:0;background:var(--acc);transform-origin:0 50%;transform:scaleX(var(--p,0))}
+.steps .lbl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.steps .lbl b{display:block;color:var(--ink);font-weight:500}
+.muda{list-style:none;margin:0;padding:0;display:grid}
+.muda li{padding:11px 0;border-top:1px solid rgba(0,0,0,.1);font-size:14.5px;color:var(--ink-soft)}
+.muda b{font-weight:500;color:var(--ink)}
+.fine{font-size:13px;color:var(--ink-soft);max-width:80ch}
 
-/* tabela no padrão do modelo */
-.tb{width:100%;border-collapse:collapse;font-size:.92rem}
-.tb th{background:var(--blue-d);color:var(--on-dark);font-weight:700;font-size:.78rem;letter-spacing:.02em;text-align:left;padding:10px 14px;border:1px solid var(--on-dark)}
-.tb td{padding:12px 14px;border:1px solid var(--rule);vertical-align:top}
-.tb tbody tr{transition:background .15s}
-.tb tbody tr:hover{background:var(--blue-soft)}
-.tb .n{font-family:var(--serif);font-size:1.3rem;color:var(--blue);text-align:center;width:56px}
-.tb .nm{font-weight:700;color:var(--head);white-space:nowrap}
-.tb .nm small{display:block;font-weight:300;color:var(--mute);font-size:.8rem}
-.tb .go a{display:inline-block;background:var(--ink);color:var(--on-dark);text-decoration:none;padding:8px 16px;font-size:.8rem;letter-spacing:.04em;white-space:nowrap;transition:background .2s}
-.tb .go a:hover{background:var(--blue)}
-.tb .v{font-family:var(--serif);font-size:1.25rem;color:var(--head);white-space:nowrap}
-.c-ok{background:var(--ok);color:var(--ok-t)} .c-warn{background:var(--warn);color:var(--warn-t)} .c-bad{background:var(--bad);color:var(--bad-t)} .c-neu{background:var(--stone)}
-.tb td.c-ok,.tb td.c-warn,.tb td.c-bad,.tb td.c-neu{text-align:center;font-size:.84rem;white-space:nowrap}
-.fonte{color:var(--mute);font-size:.78rem}
-.disc{margin:28px 0 0;border:1px dashed var(--red-soft);padding:12px 16px;font-size:.82rem;color:var(--mute);max-width:980px}
-.disc b{color:var(--red);font-weight:400}
+/* prazos */
+.prazos{background:var(--mist)}
+.prazos .inner{padding-block:clamp(90px,14vh,160px);display:grid;gap:40px}
+.calc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:20px;align-items:stretch}
+.mock{border-radius:16px;background:var(--paper);padding:clamp(24px,3vw,40px);display:grid;gap:20px;align-content:start}
+.f label{display:block;font-size:13px;font-weight:500;margin-bottom:8px}
+.f input,.f select{width:100%;border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:12px 14px;font:inherit;font-size:16px;border-radius:10px;min-height:48px}
+.f input:focus,.f select:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px rgba(34,123,166,.18)}
+.f input:disabled,.f select:disabled{opacity:.5}
+.chk{display:flex;gap:12px;align-items:flex-start;font-size:14.5px;color:var(--ink-soft);cursor:pointer}
+.chk input{margin-top:3px;accent-color:var(--acc);width:18px;height:18px;flex:none}
+.res{border-radius:16px;background:var(--grad);color:var(--paper);padding:clamp(24px,3vw,40px);display:grid;gap:18px;align-content:start;position:relative;overflow:hidden}
+.res .eyebrow{color:rgba(255,255,255,.7)}
+.res .fatal{font-family:var(--f-display);font-weight:200;font-size:clamp(34px,4.2vw,60px);letter-spacing:-.03em;line-height:1}
+.res .dia{color:rgba(255,255,255,.8)}
+.grade{display:flex;flex-wrap:wrap;gap:4px}
+.grade i{width:14px;height:14px;border-radius:3px;background:rgba(255,255,255,.18);display:block}
+.grade i.g-u{background:var(--paper)}
+.grade i.g-f{background:var(--wash-1)}
+.grade i.g-x{background:var(--night);box-shadow:0 0 0 2px var(--paper)}
+.leg{display:flex;flex-wrap:wrap;gap:14px;font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+.leg span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+.res ul{margin:0;padding-left:18px;font-size:14px;color:rgba(255,255,255,.85)}
+.res ul li{margin:4px 0}
 
-/* premissas numeradas (quadrado azul) */
-.prem{list-style:none;margin:0;padding:0;display:grid;gap:18px}
-.prem li{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:18px;align-items:center}
-.prem .q{width:40px;height:40px;display:grid;place-items:center;background:var(--blue-d);color:var(--on-dark);font-family:var(--serif);font-size:1.15rem}
-.prem .o b{display:block;color:var(--head);font-weight:700;font-size:.95rem}
-.prem .o span{color:var(--mute);font-size:.86rem}
-.prem .d{text-align:right;white-space:nowrap}
-.prem .d b{display:block;font-family:var(--serif);font-weight:400;font-size:1.25rem;color:var(--head)}
-.prem .d span{font-size:.78rem;color:var(--mute)}
-.prem li.prox .q{background:var(--red)}
-.prem li.prox .d span{color:var(--red)}
+/* ferramentas */
+.tools{background:var(--paper)}
+.tools .inner{padding-block:clamp(90px,14vh,160px);display:grid;gap:48px}
+.cmp{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.cmp-col{display:grid;gap:6px;align-content:start}
+.cmp-col h3{font-size:26px;display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--ink);padding-top:14px;margin-bottom:10px}
+.cmp-col h3 span{font-family:var(--f-mono);font-size:12px;color:var(--ink-soft)}
+.tool{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px;border-radius:12px;text-decoration:none;min-height:48px}
+.tool b{font-weight:500;display:block}
+.tool span{display:block;color:var(--ink-soft);font-size:14px}
+.tool em{font-style:normal;font-family:var(--f-mono);font-size:12px;color:var(--ink-soft);letter-spacing:.08em}
+.tool:hover{background:var(--mist)}
+.tool:hover em{color:var(--acc-text)}
+.tool:active{background:var(--line)}
 
-.duo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px}
-.sub-h{margin:0 0 20px;font-size:.84rem;font-weight:700;color:var(--head);letter-spacing:.02em}
+/* unidades: profundo, com a foto numa lâmina */
+.unid{background:var(--night);color:var(--on-night);overflow:hidden}
+.unid .inner{padding-block:clamp(90px,14vh,160px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center;position:relative;z-index:2}
+.unid .eyebrow{color:var(--night-mute)}
+.unid h2{font-size:clamp(32px,4.4vw,60px);color:#F4F6F9}
+.unid .copy{display:grid;gap:20px}
+.unid .copy > p{color:var(--night-soft);max-width:48ch}
+.cids{display:grid;margin-top:8px}
+.cid{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;padding:12px 0;border-top:1px solid var(--night-line);align-items:center}
+.cid b{display:block;font-family:var(--f-display);font-weight:400;font-size:17px;color:#F4F6F9}
+.cid span{font-size:13.5px;color:var(--night-mute)}
+.cid time{font-family:var(--f-mono);font-size:15px;color:#DDE3EC;font-variant-numeric:tabular-nums}
+.photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start}
+.photos figure{margin:0;border-radius:16px;overflow:hidden;filter:drop-shadow(0 30px 40px rgba(0,0,0,.45))}
+.photos figure:first-child{margin-top:48px}
+.photos img{width:100%;aspect-ratio:4/5;object-fit:cover}
+.photos figcaption{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--night-mute);padding:12px 2px 0}
 
-/* onde estamos: a onda */
-.onda svg{width:100%;height:auto;overflow:visible}
-.onda .marco text{font:300 12px var(--sans);fill:var(--graphite)}
-.onda .marco .ano{font:400 16px var(--serif);fill:var(--head)}
-.onda .marco .q{font:400 13px var(--serif);fill:var(--on-dark)}
-.onda .aqui text{font:700 12px var(--sans);fill:var(--red)}
-.falta{margin:0 0 18px;font-size:.95rem;max-width:34ch}
-.falta b{display:block;font-family:var(--serif);font-weight:400;font-size:4.2rem;line-height:1;color:var(--head);margin-bottom:6px}
-.muda{margin:0;padding:0;list-style:none;border-top:1px solid var(--rule)}
-.muda li{padding:10px 0;border-bottom:1px solid var(--rule);font-size:.9rem}
-.muda b{font-weight:700;color:var(--head)}
-.onda-h{margin-top:48px}
+/* encerramento: a foto das montanhas sob o gradiente */
+.closing{color:var(--paper);overflow:hidden;background:var(--deep)}
+.closing .bg{position:absolute;inset:0;background:url(img/fim.jpg) 50% 60%/cover no-repeat}
+.closing .bg::after{content:"";position:absolute;inset:0;background:var(--grad);opacity:.86;mix-blend-mode:multiply}
+.closing .inner{position:relative;z-index:2;min-height:min(80svh,620px);display:grid;align-content:center;gap:40px;padding-block:120px 80px}
+.closing .lock{display:flex;align-items:center;gap:22px}
+.closing .lock svg{width:clamp(64px,8vw,110px);height:auto}
+.closing .lock span{font-family:var(--f-display);font-weight:300;font-size:clamp(40px,6vw,84px);letter-spacing:.08em}
+.closing .eyebrow{color:inherit;opacity:.75}
+.closing h2{font-size:clamp(28px,3.6vw,48px);max-width:24ch}
+.actions{display:flex;flex-wrap:wrap;gap:12px}
+.btn{border:0;border-radius:999px;padding:14px 24px;min-height:48px;font-weight:500;font-size:15px;display:inline-flex;align-items:center;gap:10px;text-decoration:none}
+.btn.solid{background:var(--paper);color:var(--deep)}
+.btn.solid:hover{background:var(--tint)}
+.btn.line{background:transparent;color:inherit;box-shadow:inset 0 0 0 1px currentColor}
+.btn.line:hover{background:rgba(255,255,255,.12)}
+.btn:active{transform:translateY(1px)}
+.rod{background:var(--night);color:var(--night-mute);font-size:13px;padding:18px var(--gutter);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
-/* calculadora de prazo */
-.calc{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:56px;align-items:start}
-.form{display:grid;gap:18px}
-.f label{display:block;font-size:.8rem;font-weight:700;color:var(--head);margin-bottom:6px}
-.f input,.f select{width:100%;border:1px solid var(--field);background:var(--on-dark);padding:11px 12px;font-size:1rem;border-radius:0}
-.f input:focus,.f select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
-.chk{display:flex;gap:10px;align-items:flex-start;font-size:.9rem;cursor:pointer}
-.chk input{margin-top:4px;accent-color:var(--blue);width:16px;height:16px;flex:none}
-.res{border:1px solid var(--rule);padding:30px 34px;min-height:300px}
-.res .rot{font-size:.86rem;font-weight:700;color:var(--blue-d);margin:0 0 8px}
-.res .fatal{font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.6rem);line-height:1.1;color:var(--head);margin:0 0 4px}
-.res .dia{margin:0 0 22px;color:var(--mute)}
-.res ul{margin:0;padding-left:18px;font-size:.88rem;color:var(--mute)}
-.res ul li{margin:3px 0}
-.grade{display:flex;flex-wrap:wrap;gap:3px;margin:0 0 22px}
-.grade i{width:16px;height:16px;background:var(--stone);display:block}
-.grade i.g-u{background:var(--blue)}
-.grade i.g-f{background:var(--red-soft)}
-.grade i.g-x{background:var(--head)}
-.leg{display:flex;flex-wrap:wrap;gap:16px;font-size:.74rem;color:var(--mute);margin:-12px 0 20px}
-.leg span::before{content:"";display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;transition:all .3s;z-index:70;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
 
-/* caixas com borda (como "imóveis regulares / irregulares" do modelo) */
-.cx{border:1px solid var(--dim-2);padding:22px 26px 14px}
-.cx h4{margin:0 0 14px;font-size:.84rem;font-weight:700;color:var(--head);text-decoration:underline;text-underline-offset:4px;text-transform:uppercase;letter-spacing:.02em}
-.ln{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:baseline;padding:12px 0;border-top:1px solid var(--rule-2);text-decoration:none}
-.ln > div{transition:transform .2s}
-.cx h4 + .ln{border-top:0}
-.ln b{font-weight:700;color:var(--head);font-size:.95rem;transition:color .2s}
-.ln span{display:block;color:var(--mute);font-size:.84rem}
-.ln em{font-style:normal;font-size:.78rem;color:var(--blue);letter-spacing:.04em}
-.ln:hover > div{transform:translateX(8px)}
-.ln:active > div,.tb .go a:active,.prog a:active{opacity:.7}
-.ln:hover b{color:var(--blue)}
-.tri{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,.8fr);gap:28px}
-
-/* unidades: lâmina escura */
-.unid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);background:var(--ink);color:var(--on-dark-2)}
-.unid figure{margin:0;position:relative;min-height:560px;overflow:hidden}
-.unid figure img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:30% 50%}
-.unid figure::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,var(--veil-3),var(--veil-n) 45%)}
-.unid figure .ttl{z-index:1;position:absolute;left:44px;bottom:44px;display:flex;align-items:center;gap:24px;color:var(--on-dark)}
-.unid .num{font-family:var(--serif);font-size:6.4rem;line-height:.8}
-.unid figure h2{margin:0;font-size:1.6rem}
-.unid .lst{padding:56px 56px 48px}
-.unid .lst > p{margin:0 0 28px;font-size:.92rem;color:var(--dim);max-width:52ch;text-align:justify;hyphens:auto}
-.unid .lst > p b{color:var(--on-dark);font-weight:700}
-.cid{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;padding:14px 0;border-top:1px solid var(--rule-dark)}
-.cid b{display:block;color:var(--on-dark);font-weight:700;font-size:.95rem}
-.cid span{font-size:.85rem;color:var(--dim)}
-.cid time{font-family:var(--serif);font-size:1.35rem;color:var(--on-dark);align-self:center}
-
-/* encerramento */
-.fim{position:relative;height:440px;background:var(--deep) url(img/fim.jpg) 50% 60%/cover no-repeat;color:var(--on-dark);display:flex;align-items:flex-end;justify-content:space-between;padding:48px 56px}
-.fim p{margin:0;font-size:.92rem;color:var(--on-dark)}
-.fim p b{display:block;font-weight:700;color:var(--on-dark)}
-.fim .marca svg{width:46px;height:46px}
-.fim .marca span{font-size:1.7rem}
-.rod{background:var(--ink);color:var(--dim-3);font-size:.78rem;padding:16px 56px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
-
-/* entrada suave das lâminas */
-.js .rev{opacity:0;transform:translateY(14px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
-.js .rev.vista,.js.sem-io .rev{opacity:1;transform:none}
-
-@media (prefers-reduced-motion: reduce){
-  .cap-div img,.rev{transition:none;transform:none}
-  .rev{opacity:1}
+@media (max-width:900px){
+  .choices{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hoje .inner,.ag-grid,.calc,.unid .inner,.sec-head{grid-template-columns:minmax(0,1fr)}
+  .mf-points{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cmp{grid-template-columns:minmax(0,1fr)}
+  .photos figure:first-child{margin-top:0}
+  #nav .bar{height:auto;padding:8px 0;flex-wrap:wrap}
 }
-
-@media (max-width: 900px){
-  :root{--spine:28px}
-  .capa{grid-template-columns:minmax(0,1fr);min-height:0}
-  .capa .txt{padding:28px 20px 32px;gap:48px}
-  .capa figure{height:300px}
-  .prog{padding:44px 20px;min-height:0;background-position:78% 50%}
-  .cap-div{height:340px}
-  .cap-div .ttl,.cap-div.dir .ttl{left:20px;right:auto;bottom:28px;gap:18px}
-  .cap-div .num{font-size:5rem}
-  .lam .corpo{padding:64px 18px 72px}
-  .lam .lomb span{font-size:.85rem}
-  .duo,.calc,.tri,.unid{grid-template-columns:minmax(0,1fr);gap:36px}
-  .unid{gap:0}
-  .unid figure{min-height:320px}
-  .unid .lst{padding:36px 20px}
-  .tb thead{display:none}
-  .tb,.tb tbody,.tb tr,.tb td{display:block;width:100%}
-  .tb tr{border:1px solid var(--rule);margin-bottom:12px}
-  .tb td{border:0;border-top:1px solid var(--rule-2);padding:8px 12px}
-  .tb td:first-child{border-top:0}
-  .tb .n{text-align:left;width:auto}
-  .tb .nm{white-space:normal}
-  .tb td[data-h]::before{content:attr(data-h);display:block;font-size:.78rem;font-weight:700;color:var(--blue-d)}
-  .tb td.c-ok,.tb td.c-warn,.tb td.c-bad,.tb td.c-neu{text-align:left;white-space:normal}
-  .prem li{grid-template-columns:36px minmax(0,1fr);row-gap:4px}
-  .prem .d{grid-column:2;text-align:left}
-  .res{padding:24px 20px}
-  .fim{height:360px;padding:28px 20px;flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:22px}
-  .rod{padding:14px 20px}
+@media (max-width:560px){
+  .choices{grid-template-columns:minmax(0,1fr)}
+  .choice{grid-template-columns:120px minmax(0,1fr);align-items:center}
+  .choice-tile{aspect-ratio:1/1}
+  .choice-tile .area{display:none}
+  .choice-meta{border-top:0;padding-top:0}
+  .mf-points{grid-template-columns:minmax(0,1fr)}
+  .pillar{grid-template-columns:44px minmax(0,1fr)}
+  .pillar .ic{width:44px;height:44px}
+  .pillar .d{grid-column:2;text-align:left}
+  .photos{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:reduce){
+  .choice-tile,#nav{transition:none}
 }
 </style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="burst" viewBox="-50 -50 100 100"><g id="burst-g" fill="currentColor"></g></symbol></svg>
 
-<header class="capa">
-  <div class="txt">
-    <a class="marca" href="https://veigalaw.github.io/" target="_blank" rel="noopener" aria-label="Veiga, todos os painéis"><svg aria-hidden="true"><use href="#burst"/></svg><span>VEIGA</span></a>
-    <div>
-      <h1 class="cap" id="ola">Bom dia, Veiga.</h1>
-      <p class="when" id="when">&nbsp;</p>
-      <p class="sub">Intranet do Veiga Advogados e da Veiga Partners. Sistemas, números do dia, agenda fiscal e prazos num lugar só.</p>
+<section id="gate" class="wrap" aria-label="Abertura">
+  <div class="inner">
+    <div class="gate-head">
+      <span class="eyebrow chap-label">Veiga · Intranet</span>
+      <h1 id="ola">Bom dia, <em>Veiga</em>.</h1>
+      <p>Sistemas, números do dia, agenda fiscal e prazos num lugar só. Escolha por onde começar; o menu permite trocar a qualquer momento.</p>
+    </div>
+    <div class="dict" id="dict"><span><b>hoje</b> <span id="when"><span class="sk"></span></span></span><span id="d-util"></span><span id="d-selic"></span><span id="d-ipca"></span></div>
+    <div class="choices" id="choices"></div>
+    <div class="gate-foot">
+      <p>Os painéis são atualizados pelos robôs às 7h45 e às 19h45.</p>
+      <a class="ghost" href="https://veigalaw.github.io/" target="_blank" rel="noopener">Todos os painéis</a>
     </div>
   </div>
-  <figure><img src="img/capa.jpg" alt="Cavalo de carrossel pintado, peça do acervo do escritório, sob luz azul"></figure>
-</header>
+</section>
 
-<nav class="prog" aria-label="Programação">
-  <h2 class="cap">Programação</h2>
-  <ol>
-    <li><a href="#hoje"><b></b>Informações do dia</a></li>
-    <li><a href="#sistemas"><b>01.</b>Sistemas</a></li>
-    <li><a href="#indicadores"><b>02.</b>Indicadores</a></li>
-    <li><a href="#agenda"><b>03.</b>Agenda fiscal e Reforma</a></li>
-    <li><a href="#prazos"><b>04.</b>Calculadora de prazo</a></li>
-    <li><a href="#ferramentas"><b>05.</b>Ferramentas e pastas</a></li>
-    <li><a href="#unidades"><b>06.</b>Nossas unidades</a></li>
-  </ol>
+<nav id="nav" class="wrap" aria-label="Capítulos">
+  <div class="bar">
+    <a class="home" href="#gate"><svg aria-hidden="true"><use href="#burst"/></svg>Veiga <small>Intranet</small></a>
+    <div class="tabs" id="tabs">
+      <a class="tab" href="#hoje"><b>01</b>Hoje</a>
+      <a class="tab" href="#indicadores"><b>02</b>Indicadores</a>
+      <a class="tab" href="#agenda"><b>03</b>Agenda</a>
+      <a class="tab" href="#prazos"><b>04</b>Prazos</a>
+      <a class="tab" href="#ferramentas"><b>05</b>Ferramentas</a>
+      <a class="tab" href="#unidades"><b>06</b>Unidades</a>
+    </div>
+  </div>
+  <div id="progress"></div>
 </nav>
 
 <main>
-<section class="lam rev" id="hoje" aria-labelledby="h-hoje">
-  <div class="lomb" aria-hidden="true"><span>Informações do dia</span></div>
-  <div class="corpo">
-    <h3 class="cap" id="h-hoje">Informações do dia</h3>
-    <p class="lead">Premissas para o trabalho de hoje</p>
-    <ol class="cons" aria-live="polite">
-      <li><b>Considerando</b> que hoje é <strong id="c-dia"><span class="sk"></span></strong>;</li>
-      <li><b>Considerando</b> que a Selic meta está em <strong id="c-selic"><span class="sk"></span></strong> e o IPCA de 12 meses em <strong id="c-ipca"><span class="sk"></span></strong>, o que dá um juro real de cerca de <strong id="c-real"><span class="sk"></span></strong>;</li>
-      <li><b>Considerando</b> que o próximo vencimento federal é <strong id="c-venc"><span class="sk"></span></strong>;</li>
-      <li><b>Considerando</b> que faltam <strong id="c-cbs"><span class="sk"></span></strong> para a CBS entrar por inteiro e o PIS e a Cofins deixarem de existir;</li>
-    </ol>
-    <p class="cons-fim">resta a cada um abrir o seu painel e cuidar primeiro do que vence primeiro.</p>
-    <svg class="burst" aria-hidden="true"><use href="#burst"/></svg>
+<section class="hoje wrap" id="hoje" aria-label="Informações do dia"><div class="inner">
+  <div class="entry">
+    <span class="eyebrow chap-label" id="h-hoje">Informações do dia</span>
+    <span class="w" id="e-dia">terça</span><span id="e-data"><span class="sk"></span></span>
+    <span class="sense hl" id="e-util"><b>útil</b> dia útil, expediente forense normal</span>
+    <span class="sense" id="e-venc"><b>prazo</b> <span>próximo vencimento federal</span></span>
+  </div>
+  <p class="reveal-text" id="rv">A Selic meta está em <strong id="c-selic"><span class="sk"></span></strong> e o IPCA de doze meses em <strong id="c-ipca"><span class="sk"></span></strong>, um juro real de cerca de <strong id="c-real"><span class="sk"></span></strong> ao ano. O próximo vencimento federal é <strong id="c-venc"><span class="sk"></span></strong>. Faltam <strong id="c-cbs"><span class="sk"></span></strong> para a CBS entrar por inteiro e o PIS e a Cofins deixarem de existir.</p>
+</div></section>
+
+<section class="ind wrap" id="indicadores" aria-labelledby="h-ind">
+  <svg class="ghost-dots" aria-hidden="true"><use href="#burst"/></svg>
+  <div class="inner">
+    <span class="eyebrow chap-label" id="h-ind">Indicadores</span>
+    <h2 class="mf-big">Os números de hoje, direto do Banco Central.</h2>
+    <div class="mf-points" id="ind"></div>
+    <p class="note">Séries do SGS do Banco Central e cotações da AwesomeAPI, lidas pelo navegador a cada abertura. Antes de levar um número para cálculo em peça ou parecer, confira na fonte oficial da data do cálculo.</p>
   </div>
 </section>
 
-<section class="cap-div" aria-hidden="true">
-  <img src="img/sistemas.jpg" alt="" loading="lazy">
-  <div class="ttl"><span class="num">1</span><h2 class="cap">Sistemas</h2></div>
-</section>
-<section class="lam rev" id="sistemas" aria-labelledby="h-sis">
-  <div class="lomb" aria-hidden="true"><span>Sistemas</span></div>
-  <div class="corpo">
-    <span class="tag">Painéis</span>
-    <h3 class="cap" id="h-sis">Os sistemas da casa</h3>
-    <p class="lead">Atualizados pelos robôs às 7h45 e às 19h45</p>
-    <table class="tb">
-      <thead><tr><th>Nº</th><th>Sistema</th><th>Área</th><th>O que mostra</th><th>Grupo no Teams</th><th>Acesso</th></tr></thead>
-      <tbody id="sis"></tbody>
-    </table>
-    <svg class="burst" aria-hidden="true"><use href="#burst"/></svg>
-  </div>
-</section>
-
-<section class="cap-div dir" aria-hidden="true">
-  <img src="img/indicadores.jpg" alt="" loading="lazy">
-  <div class="ttl"><span class="num">2</span><h2 class="cap">Indicadores</h2></div>
-</section>
-<section class="lam rev" id="indicadores" aria-labelledby="h-ind">
-  <div class="lomb" aria-hidden="true"><span>Indicadores</span></div>
-  <div class="corpo">
-    <span class="tag">Matriz do dia</span>
-    <h3 class="cap" id="h-ind">Indicadores econômicos</h3>
-    <p class="lead">Lidos das fontes públicas a cada abertura da página</p>
-    <table class="tb">
-      <thead><tr><th>Indicador</th><th>Valor</th><th>Referência</th><th>Leitura</th><th>Para que usamos</th></tr></thead>
-      <tbody id="ind"></tbody>
-    </table>
-    <p class="disc"><b>Disclaimer:</b> valores do Banco Central (SGS) e da AwesomeAPI, carregados no navegador. Antes de levar um número para cálculo em peça ou parecer, confira na fonte oficial da data do cálculo.</p>
-    <svg class="burst" aria-hidden="true"><use href="#burst"/></svg>
-  </div>
-</section>
-
-<section class="cap-div" aria-hidden="true">
-  <img src="img/agenda.jpg" alt="" loading="lazy">
-  <div class="ttl"><span class="num">3</span><h2 class="cap">Agenda fiscal</h2></div>
-</section>
-<section class="lam rev" id="agenda" aria-labelledby="h-ag">
-  <div class="lomb" aria-hidden="true"><span>Agenda fiscal</span></div>
-  <div class="corpo">
-    <span class="tag" id="ag-mes">Vencimentos</span>
-    <h3 class="cap" id="h-ag">Vencimentos federais</h3>
-    <p class="lead">Os próximos seis, já ajustados para dia útil</p>
-    <div class="duo">
-      <ol class="prem" id="venc"></ol>
-      <div class="ref">
-        <p class="sub-h u">REFORMA TRIBUTÁRIA</p>
-        <p class="falta" id="falta"></p>
-        <ul class="muda">
-          <li><b>CBS</b> pela alíquota de referência no lugar do PIS e da Cofins.</li>
-          <li><b>Imposto Seletivo</b> começa a valer sobre os bens que a lei listar.</li>
-          <li><b>IPI</b> vai a zero, salvo os produtos que a Zona Franca de Manaus também produz.</li>
-          <li><b>IBS</b> segue em 0,1% até 2028; a troca com ICMS e ISS começa em 2029.</li>
-        </ul>
-      </div>
+<section class="agenda wrap" id="agenda" aria-labelledby="h-ag"><div class="inner">
+  <div class="sec-head"><div><span class="eyebrow chap-label" id="ag-mes">Agenda fiscal</span><h2 id="h-ag">Os próximos vencimentos federais</h2></div><p>Os seis mais próximos, já ajustados para o dia útil anterior quando caem em fim de semana ou feriado. Ao lado, onde estamos na Reforma Tributária.</p></div>
+  <div class="ag-grid">
+    <ol class="pillars" id="venc"></ol>
+    <div class="ref-card">
+      <span class="eyebrow chap-label">Reforma tributária</span>
+      <p class="big" id="falta"><span class="sk"></span></p>
+      <div class="steps" id="steps"></div>
+      <ul class="muda">
+        <li><b>CBS</b> pela alíquota de referência, no lugar do PIS e da Cofins.</li>
+        <li><b>Imposto Seletivo</b> passa a valer sobre os bens que a lei listar.</li>
+        <li><b>IPI</b> vai a zero, salvo o que a Zona Franca de Manaus também produz.</li>
+        <li><b>IBS</b> segue em 0,1% até 2028; a troca com ICMS e ISS começa em 2029.</li>
+      </ul>
     </div>
-    <p class="sub-h u onda-h">ONDE ESTAMOS, DE 2026 A 2033</p>
-    <div class="onda" id="onda"></div>
-    <p class="disc"><b>Atenção:</b> regras gerais federais (Lei 8.212/91, Lei 11.933/09, FGTS Digital, Lei 9.430/96). ICMS, ISS, regimes especiais e feriados locais não entram aqui. Na dúvida, a controladoria confirma.</p>
-    <svg class="burst" aria-hidden="true"><use href="#burst"/></svg>
   </div>
-</section>
+  <p class="fine">Regras gerais federais (Lei 8.212/91, Lei 11.933/09, FGTS Digital, Lei 9.430/96). ICMS, ISS, regimes especiais e feriados locais não entram aqui. Na dúvida, a controladoria confirma.</p>
+</div></section>
 
-<section class="cap-div dir" aria-hidden="true">
-  <img src="img/prazo.jpg" alt="" loading="lazy">
-  <div class="ttl"><span class="num">4</span><h2 class="cap">Prazos</h2></div>
-</section>
-<section class="lam rev" id="prazos" aria-labelledby="h-pz">
-  <div class="lomb" aria-hidden="true"><span>Calculadora de prazo</span></div>
-  <div class="corpo">
-    <span class="tag">CPC, arts. 219 a 224</span>
-    <h3 class="cap" id="h-pz">Calculadora de prazo</h3>
-    <p class="lead">Dias úteis, feriados nacionais e recesso forense</p>
-    <div class="calc">
-      <form class="form" id="pz" onsubmit="return false">
-        <div class="f"><label for="pz-data">Data da intimação ou da disponibilização</label><input type="date" id="pz-data" required></div>
-        <div class="f"><label for="pz-dias">Prazo em dias</label><input type="number" id="pz-dias" min="1" max="365" value="15" inputmode="numeric"></div>
-        <div class="f"><label for="pz-modo">Contagem</label>
-          <select id="pz-modo"><option value="u">Dias úteis (processo civil)</option><option value="c">Dias corridos</option></select></div>
-        <label class="chk"><input type="checkbox" id="pz-dje" checked><span>Foi disponibilizado no DJe ou DJEN. Considera publicado no dia útil seguinte (art. 224, §§ 2º e 3º).</span></label>
-        <label class="chk"><input type="checkbox" id="pz-rec" checked><span>Suspender no recesso de 20/12 a 20/1 (art. 220).</span></label>
-      </form>
-      <div class="res" aria-live="polite">
-        <p class="rot">Data fatal</p>
-        <p class="fatal" id="pz-fatal"></p>
-        <p class="dia" id="pz-dia">Escolha a data ao lado.</p>
-        <div class="grade" id="pz-grade" aria-hidden="true"></div>
-        <div class="leg" aria-hidden="true"><span style="--c:var(--blue)">dia contado</span><span style="--c:var(--red-soft)">feriado ou recesso</span><span style="--c:var(--stone)">fim de semana</span><span style="--c:var(--head)">data fatal</span></div>
-        <ul id="pz-obs"></ul>
-      </div>
+<section class="prazos wrap" id="prazos" aria-labelledby="h-pz"><div class="inner">
+  <div class="sec-head"><div><span class="eyebrow chap-label">Prazos · CPC, arts. 219 a 224</span><h2 id="h-pz">Calculadora de prazo</h2></div><p>Conta em dias úteis com os feriados nacionais, a regra da publicação no diário eletrônico e o recesso forense. Mude qualquer campo e a data fatal se refaz na hora.</p></div>
+  <div class="calc">
+    <form class="mock" id="pz" onsubmit="return false">
+      <div class="f"><label for="pz-data">Data da intimação ou da disponibilização</label><input type="date" id="pz-data" required></div>
+      <div class="f"><label for="pz-dias">Prazo em dias</label><input type="number" id="pz-dias" min="1" max="365" value="15" inputmode="numeric"></div>
+      <div class="f"><label for="pz-modo">Contagem</label>
+        <select id="pz-modo"><option value="u">Dias úteis (processo civil)</option><option value="c">Dias corridos</option></select></div>
+      <label class="chk"><input type="checkbox" id="pz-dje" checked><span>Foi disponibilizado no DJe ou DJEN: considera publicado no dia útil seguinte (art. 224, §§ 2º e 3º).</span></label>
+      <label class="chk"><input type="checkbox" id="pz-rec" checked><span>Suspender no recesso de 20/12 a 20/1 (art. 220).</span></label>
+      <p class="fine">Não conta feriado estadual, municipal nem suspensão de expediente decretada pelo tribunal. O prazo oficial é o lançado pela controladoria.</p>
+    </form>
+    <div class="res" aria-live="polite">
+      <span class="eyebrow chap-label">Data fatal</span>
+      <p class="fatal" id="pz-fatal"></p>
+      <p class="dia" id="pz-dia">Escolha a data ao lado.</p>
+      <div class="grade" id="pz-grade" aria-hidden="true"></div>
+      <div class="leg" aria-hidden="true"><span style="--c:var(--paper)">dia contado</span><span style="--c:var(--wash-1)">feriado ou recesso</span><span style="--c:rgba(255,255,255,.18)">fim de semana</span><span style="--c:var(--night)">data fatal</span></div>
+      <ul id="pz-obs"></ul>
     </div>
-    <p class="disc"><b>Atenção:</b> não conta feriado estadual, municipal nem suspensão de expediente decretada pelo tribunal. O prazo oficial é o lançado pela controladoria.</p>
-    <svg class="burst" aria-hidden="true"><use href="#burst"/></svg>
   </div>
-</section>
+</div></section>
 
-<section class="cap-div" aria-hidden="true">
-  <img src="img/ferramentas.jpg" alt="" loading="lazy">
-  <div class="ttl"><span class="num">5</span><h2 class="cap">Ferramentas</h2></div>
-</section>
-<section class="lam rev" id="ferramentas" aria-labelledby="h-fe">
-  <div class="lomb" aria-hidden="true"><span>Ferramentas e pastas</span></div>
-  <div class="corpo">
-    <h3 class="cap" id="h-fe">O que se abre todo dia</h3>
-    <div class="tri">
-      <div class="cx">
-        <h4>Ferramentas do dia a dia</h4>
-        <a class="ln" href="https://teams.microsoft.com/" target="_blank" rel="noopener"><div><b>Teams</b><span>Chats das áreas, reuniões e os grupos que alimentam os painéis.</span></div><em>Abrir</em></a>
-        <a class="ln" href="https://outlook.office.com/mail/" target="_blank" rel="noopener"><div><b>Outlook</b><span>E-mail do escritório.</span></div><em>Abrir</em></a>
-        <a class="ln" href="https://outlook.office.com/calendar/view/month" target="_blank" rel="noopener"><div><b>Calendário</b><span>Agenda do mês, reuniões e salas.</span></div><em>Abrir</em></a>
-        <a class="ln" href="https://tasks.office.com/" target="_blank" rel="noopener"><div><b>Planner</b><span>Tarefas e quadros das equipes.</span></div><em>Abrir</em></a>
-        <a class="ln" href="https://veigaeassociados.adv.br/legalmanager" target="_blank" rel="noopener"><div><b>Legal Manager</b><span>Processos, prazos e andamentos.</span></div><em>Abrir</em></a>
-        <a class="ln" href="https://veiga.law/identidade/" target="_blank" rel="noopener"><div><b>Identidade visual</b><span>Logo, cores e modelos da marca.</span></div><em>Abrir</em></a>
-      </div>
-      <div class="cx">
-        <h4>Pastas do jurídico</h4>
-        <a class="ln" href="https://veigaeassociados.sharepoint.com/Juridico/Tributrio/Forms/AllItems.aspx" target="_blank" rel="noopener"><div><b>Tributário</b></div><em>Abrir</em></a>
-        <a class="ln" href="https://veigaeassociados.sharepoint.com/Juridico/Cvel/Forms/AllItems.aspx" target="_blank" rel="noopener"><div><b>Cível</b></div><em>Abrir</em></a>
-        <a class="ln" href="https://veigaeassociados.sharepoint.com/Juridico/Trabalhista/Forms/AllItems.aspx" target="_blank" rel="noopener"><div><b>Trabalhista</b></div><em>Abrir</em></a>
-        <a class="ln" href="https://veigaeassociados.sharepoint.com/Juridico/Societrio/Forms/AllItems.aspx" target="_blank" rel="noopener"><div><b>Societário</b></div><em>Abrir</em></a>
-      </div>
-      <div class="cx">
-        <h4>Redes</h4>
-        <a class="ln" href="https://www.linkedin.com/company/veiga-law/" target="_blank" rel="noopener"><div><b>LinkedIn</b></div><em>Abrir</em></a>
-        <a class="ln" href="https://www.instagram.com/veiga.law/" target="_blank" rel="noopener"><div><b>Instagram</b></div><em>Abrir</em></a>
-        <a class="ln" href="https://facebook.com/veiga.law/" target="_blank" rel="noopener"><div><b>Facebook</b></div><em>Abrir</em></a>
-      </div>
+<section class="tools wrap" id="ferramentas" aria-labelledby="h-fe"><div class="inner">
+  <div class="sec-head"><div><span class="eyebrow chap-label">Ferramentas</span><h2 id="h-fe">O que se abre todo dia</h2></div><p>As ferramentas do escritório, as pastas do jurídico no SharePoint e as redes da Veiga.</p></div>
+  <div class="cmp">
+    <div class="cmp-col">
+      <h3>Dia a dia<span>06</span></h3>
+      <a class="tool" href="https://teams.microsoft.com/" target="_blank" rel="noopener"><div><b>Teams</b><span>Chats das áreas, reuniões e os grupos que alimentam os painéis.</span></div><em>Abrir →</em></a>
+      <a class="tool" href="https://outlook.office.com/mail/" target="_blank" rel="noopener"><div><b>Outlook</b><span>E-mail do escritório.</span></div><em>Abrir →</em></a>
+      <a class="tool" href="https://outlook.office.com/calendar/view/month" target="_blank" rel="noopener"><div><b>Calendário</b><span>Agenda do mês, reuniões e salas.</span></div><em>Abrir →</em></a>
+      <a class="tool" href="https://tasks.office.com/" target="_blank" rel="noopener"><div><b>Planner</b><span>Tarefas e quadros das equipes.</span></div><em>Abrir →</em></a>
+      <a class="tool" href="https://veigaeassociados.adv.br/legalmanager" target="_blank" rel="noopener"><div><b>Legal Manager</b><span>Processos, prazos e andamentos.</span></div><em>Abrir →</em></a>
+      <a class="tool" href="https://veiga.law/identidade/" target="_blank" rel="noopener"><div><b>Identidade visual</b><span>Logo, cores e modelos da marca.</span></div><em>Abrir →</em></a>
     </div>
-    <svg class="burst" aria-hidden="true"><use href="#burst"/></svg>
+    <div class="cmp-col">
+      <h3>Pastas do jurídico<span>04</span></h3>
+      <a class="tool" href="https://veigaeassociados.sharepoint.com/Juridico/Tributrio/Forms/AllItems.aspx" target="_blank" rel="noopener"><div><b>Tributário</b></div><em>Abrir →</em></a>
+      <a class="tool" href="https://veigaeassociados.sharepoint.com/Juridico/Cvel/Forms/AllItems.aspx" target="_blank" rel="noopener"><div><b>Cível</b></div><em>Abrir →</em></a>
+      <a class="tool" href="https://veigaeassociados.sharepoint.com/Juridico/Trabalhista/Forms/AllItems.aspx" target="_blank" rel="noopener"><div><b>Trabalhista</b></div><em>Abrir →</em></a>
+      <a class="tool" href="https://veigaeassociados.sharepoint.com/Juridico/Societrio/Forms/AllItems.aspx" target="_blank" rel="noopener"><div><b>Societário</b></div><em>Abrir →</em></a>
+    </div>
+    <div class="cmp-col">
+      <h3>Redes<span>03</span></h3>
+      <a class="tool" href="https://www.linkedin.com/company/veiga-law/" target="_blank" rel="noopener"><div><b>LinkedIn</b></div><em>Abrir →</em></a>
+      <a class="tool" href="https://www.instagram.com/veiga.law/" target="_blank" rel="noopener"><div><b>Instagram</b></div><em>Abrir →</em></a>
+      <a class="tool" href="https://facebook.com/veiga.law/" target="_blank" rel="noopener"><div><b>Facebook</b></div><em>Abrir →</em></a>
+    </div>
   </div>
-</section>
+</div></section>
 
-<section class="unid" id="unidades" aria-labelledby="h-un">
-  <figure>
-    <img src="img/unidades.jpg" alt="Parede do escritório com o mapa pontilhado das Américas e as unidades marcadas" loading="lazy">
-    <div class="ttl"><span class="num">6</span><h2 class="cap" id="h-un">Nossas unidades</h2></div>
-  </figure>
-  <div class="lst">
-    <p>O <b>Veiga Advogados</b> é um escritório boutique de Direito Empresarial fundado em 2009 e controla a <b>Veiga Partners</b>, consultoria tributária de eficiência econômica e recuperação de tributos. Ao lado, a hora de cada unidade agora.</p>
-    <div id="cids"></div>
+<section class="unid wrap" id="unidades" aria-labelledby="h-un"><div class="inner">
+  <div class="copy">
+    <span class="eyebrow chap-label">Nossas unidades</span>
+    <h2 id="h-un">Cinco cidades, um escritório.</h2>
+    <p>O Veiga Advogados é um escritório boutique de Direito Empresarial fundado em 2009 e controla a Veiga Partners, consultoria tributária de eficiência econômica e recuperação de tributos. A hora de cada unidade, agora.</p>
+    <div class="cids" id="cids"></div>
   </div>
-</section>
+  <div class="photos">
+    <figure><img src="img/unidades.jpg" alt="Parede do escritório com o mapa pontilhado das Américas e as unidades marcadas" loading="lazy"><figcaption>O mapa, em Santo André</figcaption></figure>
+    <figure><img src="img/ferramentas.jpg" alt="Estante iluminada em azul com vasos e, ao fundo, as mesas do escritório" loading="lazy"><figcaption>A estante, em Santo André</figcaption></figure>
+  </div>
+</div></section>
 </main>
 
 <footer>
-  <div class="fim">
-    <p>Bom trabalho.<b>Veiga Advogados · Veiga Partners</b></p>
-    <a class="marca" href="https://veigalaw.github.io/" target="_blank" rel="noopener" aria-label="Todos os painéis"><svg aria-hidden="true"><use href="#burst"/></svg><span>VEIGA</span></a>
-  </div>
-  <div class="rod"><span>© <span id="ano">2026</span> Veiga Advogados</span><span>Fotos: acervo do escritório</span></div>
+  <section class="closing wrap" aria-label="Encerramento">
+    <div class="bg" aria-hidden="true"></div>
+    <div class="inner">
+      <span class="eyebrow chap-label">Veiga · Intranet</span>
+      <div class="lock"><svg aria-hidden="true"><use href="#burst"/></svg><span>VEIGA</span></div>
+      <h2>Bom trabalho. O que vence primeiro já está em cima; o resto está a um clique.</h2>
+      <div class="actions">
+        <a class="btn solid" href="https://teams.microsoft.com/" target="_blank" rel="noopener">Abrir o Teams</a>
+        <a class="btn line" href="https://veigalaw.github.io/" target="_blank" rel="noopener">Todos os painéis</a>
+        <a class="btn line" href="#gate">Voltar ao início</a>
+      </div>
+    </div>
+  </section>
+  <div class="rod"><span>© <span id="ano">2026</span> Veiga Advogados · Veiga Partners</span><span>Fotos: acervo do escritório</span></div>
 </footer>
+<div class="toast" id="toast" role="status"></div>
 
 <script>
 (() => {
@@ -470,30 +457,37 @@ button,input,select{font:inherit;color:inherit}
   const hoje0 = () => { const [y,m,d] = new Intl.DateTimeFormat("en-CA",{timeZone:tz}).format(new Date()).split("-").map(Number); return new Date(y,m-1,d); };
   const uteisEntre = (a, b) => { let n = 0, x = new Date(a); while(x < b){ x = add(x,1); if(util(x)) n++; } return n; };
   const emUteis = n => n === 0 ? "hoje" : n === 1 ? "1 dia útil" : `${n} dias úteis`;
+  const dmy = d => fmt(d,{day:"2-digit",month:"2-digit",year:"numeric"});
 
-  /* ——— saudação e relógios ——— */
+  /* ——— saudação, verbete e relógios ——— */
   const tick = () => {
-    const d = new Date();
+    const d = new Date(), h0 = hoje0();
     const h = Number(new Intl.DateTimeFormat("pt-BR",{hour:"numeric",hour12:false,timeZone:tz}).format(d));
-    $("ola").textContent = `${h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite"}, Veiga.`;
-    const dia = cap1(new Intl.DateTimeFormat("pt-BR",{weekday:"long",day:"numeric",month:"long",timeZone:tz}).format(d));
+    $("ola").innerHTML = `${h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite"}, <em>Veiga</em>.`;
+    const semana = new Intl.DateTimeFormat("pt-BR",{weekday:"long",timeZone:tz}).format(d).replace("-feira","");
     const hora = new Intl.DateTimeFormat("pt-BR",{hour:"2-digit",minute:"2-digit",timeZone:tz}).format(d);
-    $("when").textContent = `${dia}, ${hora} em São Paulo`;
-    $("c-dia").textContent = new Intl.DateTimeFormat("pt-BR",{weekday:"long",day:"numeric",month:"long",year:"numeric",timeZone:tz}).format(d) + (util(hoje0()) ? ", dia útil" : ", sem expediente forense");
+    $("when").textContent = `[${semana}] · ${fmt(d,{day:"numeric",month:"long",year:"numeric",timeZone:tz})} · ${hora} em São Paulo`;
+    const f = feriado(h0), u = util(h0);
+    $("d-util").textContent = u ? "dia útil" : f ? `feriado · ${f}` : "fim de semana";
+    $("e-dia").textContent = semana;
+    $("e-data").textContent = `[${fmt(d,{day:"2-digit",month:"short",year:"numeric",timeZone:tz}).replace(/\./g,"")}] · ${hora}`;
+    $("e-util").innerHTML = u ? "<b>útil</b> dia útil, expediente forense normal" : f ? `<b>feriado</b> ${esc(f)}, sem expediente forense` : "<b>fim de semana</b> sem expediente forense";
     $("ano").textContent = d.getFullYear();
     document.querySelectorAll("#cids time").forEach(t => t.textContent = new Intl.DateTimeFormat("pt-BR",{hour:"2-digit",minute:"2-digit",timeZone:t.dataset.tz}).format(d));
   };
 
-  /* ——— sistemas ——— */
+  /* ——— sistemas: as seis escolhas da abertura ——— */
   const SIS = [
-    {n:"Prometheus", t:"Pipeline Comercial", a:"Comercial", g:"Prometheus", d:"Rainmaker e SINAPSE: a fila do dia, o funil por estágio e a ficha de cada lead.", u:"https://veigalaw.github.io/dashcomercial/"},
-    {n:"Argos", t:"Contencioso Tributário", a:"Contencioso", g:"Contencioso tributário interno", d:"Prazos fatais e internos, quadro de demandas, carga de cada pessoa e métricas do time.", u:"https://veigalaw.github.io/contencioso/"},
-    {n:"Casa da Moeda", t:"Previdenciário", a:"Consultivo", g:"Diagnóstico - Prev", d:"O jardim dos diagnósticos: cada cliente uma flor, cada pétala uma etapa, até o crédito compensado.", u:"https://veigalaw.github.io/consultivo-prev/"},
-    {n:"Projetos Fiscais", t:"Projetos Fiscais", a:"Diretoria", g:"", d:"Fase de cada projeto, com quem está, travas, prazos do cronograma e ritmo da esteira.", u:"https://veigalaw.github.io/projetosfiscais/"},
-    {n:"Litigation", t:"Gestão de Litigation", a:"Gestão jurídica", g:"", d:"Operação, performance e gestão jurídica do escritório.", u:"https://gestao.veiga.law/board"},
-    {n:"ÁgoRHa", t:"Pessoas", a:"RH", g:"", d:"Pedidos e formulários do time para o RH: onde as pessoas da Veiga levam o que precisam.", u:"https://gestao.veiga.law/formulario-submissoes"},
+    {n:"Prometheus", t:"Pipeline Comercial", a:"Comercial", g:"Prometheus", d:"Rainmaker e SINAPSE: a fila do dia, o funil por estágio e a ficha de cada lead.", u:"https://veigalaw.github.io/dashcomercial/", f:"capa.jpg", alt:"Cavalo de carrossel pintado sob luz azul", c:"var(--wash-1)"},
+    {n:"Argos", t:"Contencioso Tributário", a:"Contencioso", g:"Contencioso tributário interno", d:"Prazos fatais e internos, quadro de demandas, carga de cada pessoa e métricas do time.", u:"https://veigalaw.github.io/contencioso/", f:"agenda.jpg", alt:"Estante e quadros na parede branca do escritório", c:"var(--wash-2)"},
+    {n:"Casa da Moeda", t:"Previdenciário", a:"Consultivo", g:"Diagnóstico - Prev", d:"O jardim dos diagnósticos: cada cliente uma flor, cada pétala uma etapa, até o crédito compensado.", u:"https://veigalaw.github.io/consultivo-prev/", f:"prazo.jpg", alt:"Quadro de uma mulher de cabelo rosa com um flamingo", c:"var(--wash-3)"},
+    {n:"Projetos Fiscais", t:"Projetos Fiscais", a:"Diretoria", g:"", d:"Fase de cada projeto, com quem está, travas, prazos do cronograma e ritmo da esteira.", u:"https://veigalaw.github.io/projetosfiscais/", f:"indicadores.jpg", alt:"Bonecos de madeira enfileirados em contraluz azul", c:"var(--wash-4)"},
+    {n:"Litigation", t:"Gestão de Litigation", a:"Gestão jurídica", g:"", d:"Operação, performance e gestão jurídica do escritório.", u:"https://gestao.veiga.law/board", f:"sistemas.jpg", alt:"Poltronas de couro diante de um quadro azul", c:"var(--wash-5)"},
+    {n:"ÁgoRHa", t:"Pessoas", a:"RH", g:"", d:"Pedidos e formulários do time para o RH: onde as pessoas da Veiga levam o que precisam.", u:"https://gestao.veiga.law/formulario-submissoes", f:"retrato.jpg", alt:"Retrato de uma mulher com lábios azuis e respingos de tinta", c:"var(--wash-6)"},
   ];
-  $("sis").innerHTML = SIS.map((s,i) => `<tr><td class="n">${String(i+1).padStart(2,"0")}</td><td class="nm" data-h="Sistema">${esc(s.n)}<small>${esc(s.t)}</small></td><td data-h="Área">${esc(s.a)}</td><td data-h="O que mostra">${esc(s.d)}</td><td data-h="Grupo no Teams">${s.g ? esc(s.g) : "—"}</td><td class="go"><a href="${s.u}" target="_blank" rel="noopener">Abrir o painel</a></td></tr>`).join("");
+  $("choices").innerHTML = SIS.map((s,i) => `<a class="choice" href="${s.u}" target="_blank" rel="noopener">
+    <span class="choice-tile" style="--c:${s.c}"><img src="img/${s.f}" alt="${esc(s.alt)}" ${i > 2 ? 'loading="lazy"' : ""}><span class="wash"></span><span class="no">Nº ${String(i+1).padStart(2,"0")}</span><span class="area">${esc(s.a)}${s.g ? " · Teams: " + esc(s.g) : ""}</span></span>
+    <span class="choice-meta"><h2>${esc(s.n)}</h2><span class="go">Abrir →</span><p>${esc(s.t)}. ${esc(s.d)}</p></span></a>`).join("");
 
   /* ——— agenda fiscal ——— */
   const ultimoUtil = (y, m) => antecipa(new Date(y, m + 1, 0));
@@ -514,45 +508,34 @@ button,input,select{font:inherit;color:inherit}
       .filter(x => x.d >= h).sort((a,b) => a.d - b.d).slice(0,6);
     $("venc").innerHTML = lista.map((x,i) => {
       const n = uteisEntre(h, x.d);
-      const quando = n === 0 ? "vence hoje" : `em ${emUteis(n)}`;
-      return `<li class="${i === 0 ? "prox" : ""}"><span class="q">${i+1}</span><span class="o"><b>${esc(x.o)}</b><span>${esc(x.s)}</span></span><span class="d"><b>${fmt(x.d,{day:"2-digit",month:"2-digit"})}</b><span>${quando}</span></span></li>`;
+      return `<li class="pillar ${i === 0 ? "next" : ""}"><span class="ic">${i+1}</span><span class="ix">${n === 0 ? "vence hoje" : "vence em " + emUteis(n)}</span><h3>${esc(x.o)}</h3><span class="d">${fmt(x.d,{day:"2-digit",month:"2-digit"})}</span><p>${esc(x.s)}</p></li>`;
     }).join("");
-    $("ag-mes").textContent = cap1(fmt(h,{month:"long",year:"numeric"}));
+    $("ag-mes").textContent = `Agenda fiscal · ${fmt(h,{month:"long",year:"numeric"})}`;
     const p = lista[0];
-    if(p) $("c-venc").textContent = `${p.o} em ${fmt(p.d,{day:"numeric",month:"long"})} (${emUteis(uteisEntre(h, p.d))})`;
+    if(p){ const n = uteisEntre(h, p.d);
+      $("c-venc").textContent = `${p.o}, em ${fmt(p.d,{day:"numeric",month:"long"})}`;
+      $("e-venc").innerHTML = `<b>prazo</b> <span>${esc(p.o)} ${n === 0 ? "vence hoje" : "em " + emUteis(n)}</span>`; }
 
-    /* a onda: o mesmo desenho de "onde estamos" do modelo, agora para a Reforma */
-    const M = [
-      {a:"2026", t:["Ano de teste: CBS 0,9%","e IBS 0,1% destacados"], c:"#00b050", x:110},
-      {a:"2027", t:["CBS integral, fim do PIS","e da Cofins, começa o IS"], c:"#227ba6", x:370},
-      {a:"2029 a 2032", t:["ICMS e ISS caem 10% ao ano","e o IBS sobe no lugar"], c:"#e0a800", x:630},
-      {a:"2033", t:["Modelo novo pleno,","ICMS e ISS extintos"], c:"#c00000", x:890},
-    ];
-    const W = 1000, yAt = x => 120 + 46 * Math.sin((x / W) * Math.PI * 2 - .6);
-    const path = Array.from({length:101},(_,i) => `${i ? "L" : "M"}${i*10},${yAt(i*10).toFixed(1)}`).join("");
-    const t0 = new Date(2026,0,1), t1 = new Date(2033,0,1), fr = Math.min(1, Math.max(0, (h - t0) / (t1 - t0)));
-    const xa = 110 + fr * 780, ya = yAt(xa);
-    $("onda").innerHTML = `<svg viewBox="0 -12 ${W} 274" role="img" aria-label="Linha do tempo da Reforma Tributária de 2026 a 2033, com a posição de hoje">
-      <path d="${path}" fill="none" stroke="#9a9a97" stroke-width="1.2"/>
-      ${M.map((m,i) => { const y = yAt(m.x), up = i % 2 === 0, by = up ? y - 74 : y + 22;
-        return `<g class="marco"><circle cx="${m.x}" cy="${y.toFixed(1)}" r="4.5" fill="#3a3a3a"/><line x1="${m.x}" y1="${y.toFixed(1)}" x2="${m.x}" y2="${(up ? by + 32 : by).toFixed(1)}" stroke="#d0d0cc"/><rect x="${m.x - 16}" y="${by.toFixed(1)}" width="32" height="32" fill="${m.c}"/><text class="q" x="${m.x}" y="${(by + 21).toFixed(1)}" text-anchor="middle">${i+1}</text><text class="ano" x="${m.x}" y="${(up ? by - 40 : by + 54).toFixed(1)}" text-anchor="middle">${m.a}</text><text x="${m.x}" y="${(up ? by - 22 : by + 72).toFixed(1)}" text-anchor="middle">${m.t[0]}</text><text x="${m.x}" y="${(up ? by - 6 : by + 88).toFixed(1)}" text-anchor="middle">${m.t[1]}</text></g>`; }).join("")}
-      <g class="aqui"><circle cx="${xa.toFixed(1)}" cy="${ya.toFixed(1)}" r="6" fill="#fff" stroke="#c00000" stroke-width="2"/><text x="${xa.toFixed(1)}" y="${(ya + 26).toFixed(1)}" text-anchor="middle">hoje</text></g>
-    </svg>`;
+    /* a Reforma: quatro etapas e onde estamos */
     const dias = Math.ceil((new Date(2027,0,1) - h) / 864e5);
-    $("falta").innerHTML = dias > 0 ? `<b>${dias}</b> dias para 1º de janeiro de 2027. O que muda nesse dia:` : "A CBS já está em vigor por inteiro.";
+    $("falta").innerHTML = dias > 0 ? `${dias}<small>dias para 1º de janeiro de 2027, quando a CBS entra por inteiro. O que muda nesse dia:</small>` : `0<small>A CBS já está em vigor por inteiro.</small>`;
     $("c-cbs").textContent = `${Math.max(0, dias)} dias`;
+    const E = [["2026","CBS 0,9% e IBS 0,1% de teste"],["2027","CBS integral, fim do PIS e da Cofins"],["2029 a 2032","ICMS e ISS caem 10% ao ano"],["2033","modelo pleno, ICMS e ISS extintos"]];
+    const lim = [new Date(2026,0,1), new Date(2027,0,1), new Date(2029,0,1), new Date(2033,0,1), new Date(2034,0,1)];
+    const prog = E.map((_,i) => Math.min(1, Math.max(0, (h - lim[i]) / (lim[i+1] - lim[i]))));
+    $("steps").innerHTML = `<div class="bar">${prog.map(p => `<span><i style="--p:${p.toFixed(3)}"></i></span>`).join("")}</div><div class="lbl">${E.map(([a,t]) => `<span><b>${a}</b>${t}</span>`).join("")}</div>`;
   };
 
   /* ——— calculadora de prazo ——— */
   const prazo = () => {
     const v = $("pz-data").value;
-    if(!v){ $("pz-fatal").textContent = "—"; $("pz-dia").textContent = "Escolha a data ao lado."; $("pz-grade").innerHTML = ""; $("pz-obs").innerHTML = ""; return; }
+    if(!v){ $("pz-fatal").textContent = ""; $("pz-dia").textContent = "Escolha a data ao lado."; $("pz-grade").innerHTML = ""; $("pz-obs").innerHTML = ""; return; }
     const [y,m,d] = v.split("-").map(Number);
     let base = new Date(y, m-1, d);
     const n = Math.max(1, Math.min(365, Number($("pz-dias").value) || 15));
     const corr = $("pz-modo").value === "c", rec = $("pz-rec").checked, obs = [], cel = [], vistos = new Set();
     const anota = z => { const f = feriado(z); if(f && !vistos.has(iso(z))){ vistos.add(iso(z)); obs.push(`${fmt(z,{day:"2-digit",month:"2-digit"})}: ${f}, não conta.`); } };
-    if($("pz-dje").checked){ base = proxUtil(base); obs.push(`Publicação considerada em ${fmt(base,{day:"2-digit",month:"2-digit",year:"numeric"})}; a contagem começa no dia útil seguinte.`); }
+    if($("pz-dje").checked){ base = proxUtil(base); obs.push(`Publicação considerada em ${dmy(base)}; a contagem começa no dia útil seguinte.`); }
     let x = new Date(base), k = 0, susp = 0;
     while(k < n){
       x = add(x,1);
@@ -568,7 +551,7 @@ button,input,select{font:inherit;color:inherit}
     cel[cel.length - 1] = "g-x";
     $("pz-fatal").textContent = fmt(x,{day:"numeric",month:"long",year:"numeric"});
     $("pz-dia").textContent = cap1(fmt(x,{weekday:"long"})) + `, ao fim de ${n} dias ${corr ? "corridos" : "úteis"}`;
-    $("pz-grade").innerHTML = cel.slice(-140).map(c => `<i class="${c}"></i>`).join("");
+    $("pz-grade").innerHTML = cel.slice(-120).map(c => `<i class="${c}"></i>`).join("");
     $("pz-obs").innerHTML = obs.map(o => `<li>${esc(o)}</li>`).join("");
   };
   ["pz-data","pz-dias","pz-modo","pz-dje","pz-rec"].forEach(id => $(id).addEventListener("input", prazo));
@@ -587,7 +570,9 @@ button,input,select{font:inherit;color:inherit}
   agenda();
 
   /* ——— indicadores ——— */
-  const sgs = (s, n) => fetch(typeof n === "number" ? `https://api.bcb.gov.br/dados/serie/bcdata.sgs.${s}/dados/ultimos/${n}?formato=json` : `https://api.bcb.gov.br/dados/serie/bcdata.sgs.${s}/dados?formato=json&dataInicial=${n}&dataFinal=${fmt(hoje0(),{day:"2-digit",month:"2-digit",year:"numeric"})}`).then(r => { if(!r.ok) throw r.status; return r.json(); })
+  const hojeStr = dmy(hoje0());
+  const sgs = (s, n) => fetch(typeof n === "number" ? `https://api.bcb.gov.br/dados/serie/bcdata.sgs.${s}/dados/ultimos/${n}?formato=json` : `https://api.bcb.gov.br/dados/serie/bcdata.sgs.${s}/dados?formato=json&dataInicial=${n}&dataFinal=${hojeStr}`)
+    .then(r => { if(!r.ok) throw r.status; return r.json(); })
     .then(a => a.map(o => { const [dd,mm,yy] = o.data.split("/"); return {d:new Date(+yy,+mm-1,+dd), v:parseFloat(o.valor)}; }).sort((a,b) => a.d - b.d));
   const pct = (v, c = 2) => v.toLocaleString("pt-BR",{minimumFractionDigits:c,maximumFractionDigits:c}) + "%";
   const brl = v => v.toLocaleString("pt-BR",{style:"currency",currency:"BRL",minimumFractionDigits:2,maximumFractionDigits:4});
@@ -602,47 +587,85 @@ button,input,select{font:inherit;color:inherit}
     {k:"eur", n:"Euro", u:"Cooperação internacional"},
     {k:"ufesp", n:"UFESP 2026", u:"Custas no TJSP: 1,5% da causa, teto de 3.000 UFESPs (R$ 115.260,00)"},
   ];
-  const IND = {ufesp:{v:"R$ 38,42", r:"vale o ano de 2026", l:["Fixa no ano","c-neu"], f:"Sefaz-SP"}};
+  const IND = {ufesp:{v:"R$ 38,42", r:"vale o ano de 2026", l:["Fixa no ano",""], f:"Sefaz-SP"}};
   const renderInd = () => {
     $("ind").innerHTML = ROWS.map(r => { const o = IND[r.k];
-      return `<tr><td class="nm" data-h="Indicador">${r.n}</td><td class="v" data-h="Valor">${o ? o.v : '<span class="sk"></span>'}</td><td data-h="Referência">${o ? o.r : "carregando"}${o && o.f ? `<br><span class="fonte">${o.f}</span>` : ""}</td><td class="${o ? o.l[1] : "c-neu"}" data-h="Leitura">${o ? o.l[0] : "—"}</td><td data-h="Para que usamos">${r.u}</td></tr>`; }).join("");
+      return `<div class="mf-pt"><span class="ix">${r.n}</span><h3>${o ? o.v : '<span class="sk"></span>'}</h3><p class="ref">${o ? o.r : "carregando"}${o && o.f ? `<small>${o.f}</small>` : ""}</p><span class="pill ${o ? o.l[1] : ""}">${o ? o.l[0] : "…"}</span><p class="use">${r.u}</p></div>`; }).join("");
   };
-  const falhou = k => { IND[k] = {v:"—", r:"fonte fora do ar agora", l:["tente mais tarde","c-neu"]}; renderInd(); };
+  const falhou = k => { IND[k] = {v:"—", r:"fonte fora do ar agora", l:["tente mais tarde",""]}; renderInd(); };
   renderInd();
   let SEL, IPC;
-  const juroReal = () => { if(SEL == null || IPC == null) return; $("c-real").textContent = pct(((1 + SEL/100) / (1 + IPC/100) - 1) * 100, 1) + " ao ano"; };
-  sgs(432, fmt(add(hoje0(), -300),{day:"2-digit",month:"2-digit",year:"numeric"})).then(a => {
+  const juroReal = () => { if(SEL == null || IPC == null) return; $("c-real").textContent = pct(((1 + SEL/100) / (1 + IPC/100) - 1) * 100, 1); };
+  sgs(432, dmy(add(hoje0(), -300))).catch(() => sgs(432, 20)).then(a => {
     const u = a[a.length-1], ant = [...a].reverse().find(o => o.v !== u.v);
-    SEL = u.v; $("c-selic").textContent = pct(u.v) + " ao ano"; juroReal();
-    const l = !ant ? ["Estável","c-neu"] : u.v > ant.v ? [`Subiu de ${pct(ant.v)}`,"c-bad"] : [`Caiu de ${pct(ant.v)}`,"c-ok"];
+    SEL = u.v; $("c-selic").textContent = pct(u.v); $("d-selic").textContent = `Selic ${pct(u.v)}`; juroReal();
+    const l = !ant ? ["Estável",""] : u.v > ant.v ? [`Subiu de ${pct(ant.v)}`,"bad"] : [`Caiu de ${pct(ant.v)}`,"ok"];
     IND.selic = {v:pct(u.v), r:"ao ano, definida pelo Copom", l, f:"BCB, série 432"}; renderInd();
-  }).catch(() => { falhou("selic"); $("c-selic").textContent = "indisponível agora"; });
+  }).catch(() => { falhou("selic"); $("c-selic").textContent = "(indisponível)"; });
   sgs(4390, 3).then(a => { const u = a[a.length-1], p = a[a.length-2];
-    IND.selicm = {v:pct(u.v), r:`acumulada em ${mes(u.d)}`, l: p ? [`${pct(p.v)} no mês anterior`, "c-neu"] : ["—","c-neu"], f:"BCB, série 4390"}; renderInd(); }).catch(() => falhou("selicm"));
+    IND.selicm = {v:pct(u.v), r:`acumulada em ${mes(u.d)}`, l: p ? [`${pct(p.v)} no mês anterior`, ""] : ["—",""], f:"BCB, série 4390"}; renderInd(); }).catch(() => falhou("selicm"));
   sgs(12, 1).then(a => { const u = a[a.length-1], an = (Math.pow(1 + u.v/100, 252) - 1) * 100;
-    IND.cdi = {v:pct(an), r:`ao ano, base 252, em ${fmt(u.d,{day:"2-digit",month:"2-digit"})}`, l:["Acompanha a Selic","c-neu"], f:"BCB, série 12"}; renderInd(); }).catch(() => falhou("cdi"));
+    IND.cdi = {v:pct(an), r:`ao ano, base 252, em ${fmt(u.d,{day:"2-digit",month:"2-digit"})}`, l:["Acompanha a Selic",""], f:"BCB, série 12"}; renderInd(); }).catch(() => falhou("cdi"));
   sgs(13522, 2).then(a => {
-    const u = a[a.length-1], p = a[a.length-2]; IPC = u.v; $("c-ipca").textContent = pct(u.v); juroReal();
-    const l = u.v > 4.5 ? ["Acima do teto da meta (4,5%)","c-bad"] : u.v < 1.5 ? ["Abaixo do piso da meta","c-warn"] : ["Dentro da meta de 3% ± 1,5","c-ok"];
+    const u = a[a.length-1], p = a[a.length-2]; IPC = u.v; $("c-ipca").textContent = pct(u.v); $("d-ipca").textContent = `IPCA ${pct(u.v)}`; juroReal();
+    const l = u.v > 4.5 ? ["Acima do teto da meta (4,5%)","bad"] : u.v < 1.5 ? ["Abaixo do piso da meta","warn"] : ["Dentro da meta de 3% ± 1,5","ok"];
     IND.ipca = {v:pct(u.v), r:`até ${mes(u.d)}${p ? `, antes ${pct(p.v)}` : ""}`, l, f:"BCB, série 13522"}; renderInd();
-  }).catch(() => { falhou("ipca"); $("c-ipca").textContent = "indisponível agora"; $("c-real").textContent = "—"; });
+  }).catch(() => { falhou("ipca"); $("c-ipca").textContent = "(indisponível)"; $("c-real").textContent = "—"; });
   sgs(189, 12).then(a => { const ac = (a.reduce((s,o) => s * (1 + o.v/100), 1) - 1) * 100, u = a[a.length-1];
-    IND.igpm = {v:pct(ac), r:`12 meses até ${mes(u.d)}; no mês, ${pct(u.v)}`, l: ac > 6 ? ["Pressiona reajustes","c-bad"] : ac < 0 ? ["Deflação: reajuste pode ser negativo","c-warn"] : ["Moderado","c-ok"], f:"BCB, série 189"}; renderInd(); }).catch(() => falhou("igpm"));
+    IND.igpm = {v:pct(ac), r:`12 meses até ${mes(u.d)}; no mês, ${pct(u.v)}`, l: ac > 6 ? ["Pressiona reajustes","bad"] : ac < 0 ? ["Deflação: reajuste pode ser negativo","warn"] : ["Moderado","ok"], f:"BCB, série 189"}; renderInd(); }).catch(() => falhou("igpm"));
   fetch("https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL").then(r => r.json()).then(j => {
     [["usd","USDBRL"],["eur","EURBRL"]].forEach(([k,c]) => { const o = j[c]; if(!o) return falhou(k); const p = parseFloat(o.pctChange), hr = o.create_date ? o.create_date.slice(11,16) : "";
-      IND[k] = {v:brl(parseFloat(o.bid)), r:`compra${hr ? ", às " + hr : ""}`, l:[`${p >= 0 ? "▲" : "▼"} ${pct(Math.abs(p))} no dia`, Math.abs(p) < .3 ? "c-neu" : p > 0 ? "c-warn" : "c-ok"], f:"AwesomeAPI"}; });
+      IND[k] = {v:brl(parseFloat(o.bid)), r:`compra${hr ? ", às " + hr : ""}`, l:[`${p >= 0 ? "▲" : "▼"} ${pct(Math.abs(p))} no dia`, Math.abs(p) < .3 ? "" : p > 0 ? "warn" : "ok"], f:"AwesomeAPI"}; });
     renderInd();
   }).catch(() => { falhou("usd"); falhou("eur"); });
 
-  /* ——— navegação e entrada das lâminas ——— */
-  const calmo = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  document.querySelector(".prog").addEventListener("click", e => { const a = e.target.closest("a[href^='#']"); const t = a && document.querySelector(a.getAttribute("href")); if(t){ e.preventDefault(); t.scrollIntoView({behavior: calmo ? "auto" : "smooth", block:"start"}); } });
-  if(!("IntersectionObserver" in window) || calmo){ document.documentElement.classList.add("sem-io"); return; }
-  let ouviu = false;
-  const io = new IntersectionObserver(es => { ouviu = true; es.forEach(en => { if(en.isIntersecting){ en.target.classList.add("vista"); io.unobserve(en.target); } }); }, {rootMargin:"0px 0px -8% 0px"});
-  document.querySelectorAll(".rev,.cap-div").forEach(el => io.observe(el));
-  /* se o iframe do SharePoint não repassar a rolagem, mostra tudo de uma vez */
-  setTimeout(() => { if(!ouviu) document.documentElement.classList.add("sem-io"); }, 1500);
+  /* ——— movimento: GSAP e rolagem suave, como no modelo; sem eles a página fica inteira e parada ——— */
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const MOTION = !!(window.gsap && window.ScrollTrigger) && !reduce;
+  let lenis = null;
+  if(MOTION){
+    gsap.registerPlugin(ScrollTrigger);
+    if(window.Lenis){ try{ lenis = new Lenis({lerp:.09, smoothWheel:true}); lenis.on("scroll", ScrollTrigger.update); gsap.ticker.add(t => lenis.raf(t * 1000)); gsap.ticker.lagSmoothing(0); }catch(e){ lenis = null; } }
+  }
+  const goTo = sel => { const el = document.querySelector(sel); if(!el) return; if(lenis) lenis.scrollTo(el, {offset:-60}); else el.scrollIntoView({behavior: reduce ? "auto" : "smooth"}); };
+  document.addEventListener("click", e => { const a = e.target.closest('a[href^="#"]'); if(!a) return; e.preventDefault(); goTo(a.getAttribute("href")); });
+
+  if(MOTION){
+    const intro = [
+      gsap.from("#gate .gate-head > *", {y:30, opacity:0, duration:1, stagger:.08, ease:"power3.out"}),
+      gsap.from("#gate .choice", {y:60, opacity:0, duration:1.1, delay:.25, stagger:.1, ease:"power3.out"}),
+      gsap.from("#gate .dict, #gate .gate-foot", {opacity:0, duration:1, delay:.6}),
+    ];
+    /* se a aba estiver em segundo plano, o relógio da animação para; depois de um instante, a abertura termina sozinha */
+    setTimeout(() => intro.forEach(t => { if(t.progress() < 1) t.progress(1); }), 4000);
+    /* menu aparece ao sair da abertura; a linha de progresso acompanha a rolagem */
+    ScrollTrigger.create({trigger:"#gate", start:"bottom 80px", onEnter:() => $("nav").classList.add("on"), onLeaveBack:() => $("nav").classList.remove("on")});
+    gsap.to("#progress", {scaleX:1, ease:"none", scrollTrigger:{trigger:"main", start:"top 60px", end:"bottom bottom", scrub:true}});
+    /* o texto do dia se revela palavra a palavra */
+    const rvEl = $("rv");
+    const words = node => { [...node.childNodes].forEach(c => { if(c.nodeType === 3){ const frag = document.createDocumentFragment(); c.textContent.split(/(\s+)/).forEach(w => { if(w.trim()){ const s = document.createElement("span"); s.className = "wd"; s.textContent = w; frag.appendChild(s); } else frag.appendChild(document.createTextNode(w)); }); c.replaceWith(frag); } else if(c.tagName === "STRONG") c.classList.add("wd"); }); };
+    words(rvEl);
+    gsap.fromTo(rvEl.querySelectorAll(".wd"), {opacity:.12}, {opacity:1, stagger:.06, ease:"none", scrollTrigger:{trigger:"#hoje", start:"top 70%", end:"bottom 75%", scrub:true}});
+    gsap.from("#hoje .entry > *", {y:20, opacity:0, duration:.9, stagger:.08, ease:"power3.out", scrollTrigger:{trigger:"#hoje", start:"top 75%", once:true}});
+    gsap.from(".mf-big", {y:30, opacity:0, duration:1, ease:"power3.out", scrollTrigger:{trigger:"#indicadores", start:"top 75%", once:true}});
+    ScrollTrigger.create({trigger:"#ind", start:"top 85%", once:true, onEnter:() => gsap.from("#ind .mf-pt", {y:30, opacity:0, duration:.9, stagger:.06, ease:"power3.out", immediateRender:false})});
+    gsap.to(".ghost-dots", {y:-120, rotation:20, ease:"none", scrollTrigger:{trigger:"#indicadores", start:"top bottom", end:"bottom top", scrub:true}});
+    ScrollTrigger.create({trigger:"#venc", start:"top 85%", once:true, onEnter:() => gsap.from("#venc .pillar", {x:-24, opacity:0, duration:.8, stagger:.08, ease:"power3.out", immediateRender:false})});
+    ScrollTrigger.create({trigger:"#steps", start:"top 85%", once:true, onEnter:() => gsap.from("#steps .bar span i", {scaleX:0, duration:1.2, stagger:.15, ease:"power3.out", immediateRender:false})});
+    gsap.from(".ref-card .big", {y:30, opacity:0, duration:1, ease:"power3.out", scrollTrigger:{trigger:".ref-card", start:"top 80%", once:true}});
+    gsap.from(".calc > *", {y:40, opacity:0, duration:1, stagger:.12, ease:"power3.out", scrollTrigger:{trigger:".calc", start:"top 85%", once:true}});
+    gsap.from(".cmp-col", {y:40, opacity:0, duration:1, stagger:.1, ease:"power3.out", scrollTrigger:{trigger:".cmp", start:"top 85%", once:true}});
+    gsap.from(".photos figure", {y:60, opacity:0, duration:1.2, stagger:.15, ease:"power3.out", scrollTrigger:{trigger:".photos", start:"top 85%", once:true}});
+    gsap.to(".photos figure img", {yPercent:-8, ease:"none", scrollTrigger:{trigger:"#unidades", start:"top bottom", end:"bottom top", scrub:true}});
+    gsap.from(".closing .inner > *", {y:30, opacity:0, duration:1, stagger:.1, ease:"power3.out", scrollTrigger:{trigger:".closing", start:"top 70%", once:true}});
+    gsap.to(".closing .bg", {yPercent:12, ease:"none", scrollTrigger:{trigger:".closing", start:"top bottom", end:"bottom top", scrub:true}});
+    /* aba atual no menu */
+    document.querySelectorAll("main section[id]").forEach(s => ScrollTrigger.create({trigger:s, start:"top 50%", end:"bottom 50%", onToggle:st => { if(st.isActive) document.querySelectorAll("#tabs .tab").forEach(t => t.setAttribute("aria-current", t.getAttribute("href") === "#" + s.id)); }}));
+    /* dentro do SharePoint o quadro não rola: depois de um instante, tudo o que ainda não entrou é mostrado */
+    setTimeout(() => { ScrollTrigger.refresh(); setTimeout(() => ScrollTrigger.getAll().forEach(st => { if(st.vars.once && !st.isActive && st.progress === 0){ if(st.animation) st.animation.progress(1); else if(st.vars.onEnter) st.vars.onEnter(st); } }), 2500); }, 800);
+    if(document.fonts) document.fonts.ready.then(() => ScrollTrigger.refresh());
+  }
+  window.addEventListener("load", () => { if(window.ScrollTrigger) ScrollTrigger.refresh(); });
 })();
 </script>
 </body>
