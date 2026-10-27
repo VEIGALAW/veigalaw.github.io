@@ -625,7 +625,8 @@ section{position:relative}
   let lenis = null;
   if(MOTION){
     gsap.registerPlugin(ScrollTrigger);
-    if(window.Lenis){ try{ lenis = new Lenis({lerp:.09, smoothWheel:true}); lenis.on("scroll", ScrollTrigger.update); gsap.ticker.add(t => lenis.raf(t * 1000)); gsap.ticker.lagSmoothing(0); }catch(e){ lenis = null; } }
+    /* embutida no SharePoint, a página não rola sozinha: a rolagem suave prenderia a roda do mouse dentro do quadro */
+    if(window.Lenis && window.self === window.top){ try{ lenis = new Lenis({lerp:.09, smoothWheel:true}); lenis.on("scroll", ScrollTrigger.update); gsap.ticker.add(t => lenis.raf(t * 1000)); gsap.ticker.lagSmoothing(0); }catch(e){ lenis = null; } }
   }
   const goTo = sel => { const el = document.querySelector(sel); if(!el) return; if(lenis) lenis.scrollTo(el, {offset:-60}); else el.scrollIntoView({behavior: reduce ? "auto" : "smooth"}); };
   document.addEventListener("click", e => { const a = e.target.closest('a[href^="#"]'); if(!a) return; e.preventDefault(); goTo(a.getAttribute("href")); });
